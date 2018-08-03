@@ -19,11 +19,4 @@
         app:bvg_ratio="1.77"
         app:bvg_turningTime="1000" />
 
-    <com.ashlikun.xviewpager.view.ImageViewExt
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:src="@mipmap/i_logo"
-        app:ive_Size="30dp"
-        app:ive_arc_location="top"
-        app:ive_ratio="1"></com.ashlikun.xviewpager.view.ImageViewExt>
 </LinearLayout>
