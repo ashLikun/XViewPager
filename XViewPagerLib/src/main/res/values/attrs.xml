@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ConvenientBanner">
+        <attr name="canLoop" format="boolean" />
+        <attr name="circleColorDef" format="reference" />
+        <attr name="circleColorSelect" format="reference" />
+        <attr name="cbSpace" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="BannerViewPager">
+        <!--是否可以循环-->
+        <attr name="bvg_canLoop" format="boolean" />
+        <!--自动播放时间间隔-->
+        <attr name="bvg_turningTime" format="integer" />
+        <!--大小比例，按照宽度-->
+        <attr name="bvg_ratio" format="float" />
+        <!--是否可以触摸-->
+        <attr name="bvg_isCanTouchScroll" format="boolean" />
+    </declare-styleable>
+</resources>
