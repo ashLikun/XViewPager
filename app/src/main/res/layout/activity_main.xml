@@ -24,6 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:banner_ratio="2" />
+        app:banner_isCanTouchScroll="true"
+        app:banner_isOneDataOffLoopAndTurning="false"
+        app:banner_ratio="2"
+        app:banner_turningTime="3000"
+        app:ind_style="ind_zoom" />
 
 </LinearLayout>

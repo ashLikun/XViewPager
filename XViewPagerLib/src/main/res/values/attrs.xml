@@ -23,6 +23,11 @@
         <attr name="ind_no_select"></attr>
         <attr name="ind_select"></attr>
 
+        <attr name="ind_style">
+            <enum name="ind_default" value="1"></enum>
+            <enum name="ind_zoom" value="2"></enum>
+        </attr>
+
         <attr name="banner_canLoop"></attr>
         <attr name="banner_turningTime"></attr>
         <attr name="banner_ratio"></attr>

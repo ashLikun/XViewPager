@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.ViewPagerUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,10 +23,6 @@ import java.util.List;
  * 功能介绍：默认的Indicator，只是一个圆点切换
  */
 public class DefaultIndicator extends IBannerIndicator {
-
-    private List<Object> datas;
-    private List<View> pointViews = new ArrayList<>();
-
 
     public DefaultIndicator(Context context) {
         this(context, null);

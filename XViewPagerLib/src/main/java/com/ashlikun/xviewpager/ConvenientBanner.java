@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.ashlikun.xviewpager.indicator.DefaultIndicator;
 import com.ashlikun.xviewpager.indicator.IBannerIndicator;
+import com.ashlikun.xviewpager.indicator.ZoomIndicator;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
@@ -53,16 +54,24 @@ public class ConvenientBanner extends RelativeLayout {
     @SuppressLint("ResourceType")
     private void init(Context context, AttributeSet attrs) {
         viewPager = new BannerViewPager(context);
-        indicator = new DefaultIndicator(context, attrs);
+
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ConvenientBanner);
         viewPager.setCanLoop(a.getBoolean(R.styleable.ConvenientBanner_banner_canLoop, true));
         viewPager.setOneDataOffLoopAndTurning(a.getBoolean(R.styleable.ConvenientBanner_banner_isOneDataOffLoopAndTurning, true));
         viewPager.setTurningTime(a.getInt(R.styleable.ConvenientBanner_banner_turningTime, (int) BannerViewPager.DEFAULT_TURNING_TIME));
         viewPager.setRatio(a.getFloat(R.styleable.ConvenientBanner_banner_ratio, BannerViewPager.DEFAULT_RATIO));
         viewPager.setCanTouchScroll(a.getBoolean(R.styleable.ConvenientBanner_banner_isCanTouchScroll, true));
+        int style = a.getInt(R.styleable.ConvenientBanner_ind_style, 1);
+        if (style == 1) {
+            indicator = new DefaultIndicator(context, attrs);
+        } else if (style == 2) {
+            indicator = new ZoomIndicator(context, attrs);
+        }
+
         indicator.setSpace((int) a.getDimension(R.styleable.ConvenientBanner_ind_space, ViewPagerUtils.dip2px(context, 3)));
         indicator.setSelectDraw(a.getDrawable(R.styleable.ConvenientBanner_ind_select), 0);
         indicator.setNoSelectDraw(a.getDrawable(R.styleable.ConvenientBanner_ind_no_select), 0);
+
         a.recycle();
         viewPager.setId(10086);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
