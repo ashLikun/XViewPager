@@ -2,7 +2,6 @@ package com.ashlikun.xviewpager;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
-import android.widget.Scroller;
 
 import java.lang.reflect.Field;
 
@@ -24,24 +23,33 @@ public class ViewPagerUtils {
         try {
             Field field = ViewPager.class.getDeclaredField("mScroller");
             field.setAccessible(true);
-            field.set(viewPager, new ViewPagerScroller(context, time));
+            ViewPagerScroller scroller = new ViewPagerScroller(context);
+            scroller.setScrollDuration(time);
+            field.set(viewPager, scroller);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    static class ViewPagerScroller extends Scroller {
-        int time;
-
-        public ViewPagerScroller(Context context, int time) {
-            super(context);
-            this.time = time;
-        }
-
-        @Override
-        public void startScroll(int startX, int startY, int dx, int dy, int duration) {
-            super.startScroll(startX, startY, dx, dy, time);
-        }
+    public static int dip2px(Context context, float dipValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5F);
     }
 
+    /**
+     * 无线循环的时候根据position返回真实的position
+     *
+     * @param position
+     * @param realCount 真实的个数
+     * @return
+     */
+
+    public static int getRealPosition(int position, int realCount) {
+        if (realCount == 0) {
+            return 0;
+        }
+        int realPosition = position % realCount;
+        return realPosition;
+    }
 }

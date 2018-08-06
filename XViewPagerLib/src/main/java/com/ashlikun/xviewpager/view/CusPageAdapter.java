@@ -4,6 +4,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ashlikun.xviewpager.ViewPagerUtils;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 
 import java.util.List;
@@ -23,15 +24,6 @@ class CusPageAdapter<T> extends PagerAdapter {
     private int POSITION_CHANG = POSITION_UNCHANGED;
     private BannerViewPager viewPager;
 
-    public int toRealPosition(int position) {
-        int realCount = getRealCount();
-        if (realCount == 0) {
-            return 0;
-        }
-        int realPosition = position % realCount;
-        return realPosition;
-    }
-
     @Override
     public int getCount() {
         return canLoop ? getRealCount() * MULTIPLE_COUNT : getRealCount();
@@ -43,7 +35,7 @@ class CusPageAdapter<T> extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        int realPosition = toRealPosition(position);
+        int realPosition = ViewPagerUtils.getRealPosition(position, getRealCount());
         Object data = null;
         if (datas != null && !datas.isEmpty()) {
             data = datas.get(realPosition);
@@ -113,7 +105,7 @@ class CusPageAdapter<T> extends PagerAdapter {
         }
     }
 
-//    public void setOnItemClickListener(View.OnClickListener onItemClickListener) {
-//        this.onItemClickListener = onItemClickListener;
-//    }
+    public void setDatas(List datas) {
+        this.datas = datas;
+    }
 }

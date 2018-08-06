@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
-    public static final String POSITION = "POSITION";
+    public static final String POSITION = "fpa_POSITION";
     /**
      * 当前显示的Fragment
      */
@@ -47,6 +47,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         FragmentPagerItem item = pagerItems.get(position);
+        //添加一个告诉fragment当前是第几页
         item.addParam(POSITION, position);
         return (Fragment) ARouter.getInstance()
                 .build(item.path)

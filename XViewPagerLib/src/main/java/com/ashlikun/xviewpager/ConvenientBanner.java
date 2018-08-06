@@ -1,27 +1,23 @@
 package com.ashlikun.xviewpager;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.PageTransformer;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
-import com.ashlikun.xviewpager.listener.CBPageChangeListener;
+import com.ashlikun.xviewpager.indicator.DefaultIndicator;
+import com.ashlikun.xviewpager.indicator.IBannerIndicator;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
+import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
-import com.ashlikun.xviewpager.R;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,79 +28,96 @@ import java.util.List;
  * 功能介绍：封装带有指示器的banner
  */
 
-public class ConvenientBanner extends LinearLayout {
-    private int space = 8;
+public class ConvenientBanner extends RelativeLayout {
 
-    private int[] page_indicatorId = new int[2];
-    private ArrayList<View> mPointViews = new ArrayList<View>();
-    private CBPageChangeListener pageChangeListener;
-    private ViewPager.OnPageChangeListener onPageChangeListener;
+
     private BannerViewPager viewPager;
     private ViewPagerScroller scroller;
-    private ViewGroup loPageTurningPoint;
 
 
-    public enum PageIndicatorAlign {
-        ALIGN_PARENT_LEFT, ALIGN_PARENT_RIGHT, CENTER_HORIZONTAL
-    }
-
+    private IBannerIndicator indicator;
 
     public ConvenientBanner(Context context) {
-        super(context);
-        init(context);
+        this(context, null);
     }
 
     public ConvenientBanner(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public ConvenientBanner(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public ConvenientBanner(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
-    }
-
-
+    @SuppressLint("ResourceType")
     private void init(Context context, AttributeSet attrs) {
+        viewPager = new BannerViewPager(context);
+        indicator = new DefaultIndicator(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ConvenientBanner);
-
-        page_indicatorId[0] = a.getResourceId(R.styleable.ConvenientBanner_circleColorDef, page_indicatorId[0]);
-        page_indicatorId[1] = a.getResourceId(R.styleable.ConvenientBanner_circleColorSelect, page_indicatorId[1]);
-        space = a.getDimensionPixelSize(R.styleable.ConvenientBanner_cbSpace, space);
+        viewPager.setCanLoop(a.getBoolean(R.styleable.ConvenientBanner_banner_canLoop, true));
+        viewPager.setOneDataOffLoopAndTurning(a.getBoolean(R.styleable.ConvenientBanner_banner_isOneDataOffLoopAndTurning, true));
+        viewPager.setTurningTime(a.getInt(R.styleable.ConvenientBanner_banner_turningTime, (int) BannerViewPager.DEFAULT_TURNING_TIME));
+        viewPager.setRatio(a.getFloat(R.styleable.ConvenientBanner_banner_ratio, BannerViewPager.DEFAULT_RATIO));
+        viewPager.setCanTouchScroll(a.getBoolean(R.styleable.ConvenientBanner_banner_isCanTouchScroll, true));
+        indicator.setSpace((int) a.getDimension(R.styleable.ConvenientBanner_ind_space, ViewPagerUtils.dip2px(context, 3)));
+        indicator.setSelectDraw(a.getDrawable(R.styleable.ConvenientBanner_ind_select), 0);
+        indicator.setNoSelectDraw(a.getDrawable(R.styleable.ConvenientBanner_ind_no_select), 0);
         a.recycle();
-        init(context);
-    }
-
-    private void init(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.base_convenientbanner_viewpager, this, true);
-        viewPager = (BannerViewPager) findViewById(R.id.cbLoopViewPager);
-        loPageTurningPoint = (ViewGroup) findViewById(R.id.loPageTurningPoint);
+        viewPager.setId(10086);
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        addView(viewPager, params);
+        addIndicatorView();
         initViewPagerScroll();
 
+    }
 
+    private void addIndicatorView() {
+        LayoutParams params2 = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params2.addRule(RelativeLayout.ALIGN_BOTTOM, 10086);
+        int dp10 = ViewPagerUtils.dip2px(getContext(), 10);
+        params2.setMargins(dp10, dp10, dp10, dp10);
+        addView(indicator, params2);
+        viewPager.addOnPageChangeListener(indicator);
+    }
+
+    /**
+     * 设置Indicator
+     *
+     * @param ind
+     */
+    public void setIndicator(IBannerIndicator ind) {
+        removeView(indicator);
+        if (indicator != null) {
+            ind.setSpace(indicator.getSpace());
+            ind.setSelectDraw(indicator.getSelectDraw(), getCurrentItem());
+            ind.setNoSelectDraw(indicator.getNoSelectDraw(), getCurrentItem());
+        }
+        this.indicator = ind;
+        addIndicatorView();
     }
 
     /**
      * 设置banner的数据
      *
-     * @param holderCreator
      * @param datas
      */
+    public ConvenientBanner setPages(final List<Object> datas) {
+        if (datas == null) {
+            return this;
+        }
+
+        viewPager.setPages(datas);
+        indicator.setPages(datas, getCurrentItem());
+        return this;
+    }
+
     public ConvenientBanner setPages(final ViewPageHelperListener holderCreator, final List<Object> datas) {
         if (datas == null) {
             return this;
         }
         viewPager.setPages(holderCreator, datas);
-        if (page_indicatorId != null) {
-            setPageIndicator(page_indicatorId);
-        }
-
+        indicator.setPages(datas, getCurrentItem());
         return this;
     }
 
@@ -114,9 +127,7 @@ public class ConvenientBanner extends LinearLayout {
      */
     public void notifyDataSetChanged() {
         viewPager.notifyDataSetChanged();
-        if (page_indicatorId != null) {
-            setPageIndicator(page_indicatorId);
-        }
+        indicator.notifyDataSetChanged(getCurrentItem());
     }
 
     /**
@@ -125,58 +136,20 @@ public class ConvenientBanner extends LinearLayout {
      * @param visible
      */
     public ConvenientBanner setPointViewVisible(boolean visible) {
-        loPageTurningPoint.setVisibility(visible ? View.VISIBLE : View.GONE);
+        if (indicator != null) {
+            indicator.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
         return this;
     }
 
-    /**
-     * 底部指示器资源图片
-     *
-     * @param page_indicatorId
-     */
-    public ConvenientBanner setPageIndicator(int[] page_indicatorId) {
-        loPageTurningPoint.removeAllViews();
-        mPointViews.clear();
-        this.page_indicatorId = page_indicatorId;
-        if (viewPager.getDatas() == null) {
-            return this;
-        }
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(space, 0, space, 0);
-        for (int count = 0; count < viewPager.getRealItemCount(); count++) {
-            // 翻页指示的点
-            View pointView = new ImageView(getContext());
-            if (mPointViews.isEmpty()) {
-                pointView.setBackgroundResource(page_indicatorId[1]);
-            } else {
-                pointView.setBackgroundResource(page_indicatorId[0]);
-            }
-            mPointViews.add(pointView);
-            loPageTurningPoint.addView(pointView, params);
-        }
-        pageChangeListener = new CBPageChangeListener(mPointViews,
-                page_indicatorId);
-        viewPager.setOnPageChangeListener(pageChangeListener);
-        pageChangeListener.onPageSelected(viewPager.getRealPosition());
-        if (onPageChangeListener != null) {
-            pageChangeListener.setOnPageChangeListener(onPageChangeListener);
-        }
-
-        return this;
-    }
 
     /**
      * 指示器的方向
      *
-     * @param align 三个方向：居左 （RelativeLayout.ALIGN_PARENT_LEFT），居中 （RelativeLayout.CENTER_HORIZONTAL），居右 （RelativeLayout.ALIGN_PARENT_RIGHT）
      * @return
      */
-    public ConvenientBanner setPageIndicatorAlign(PageIndicatorAlign align) {
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) loPageTurningPoint.getLayoutParams();
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, align == PageIndicatorAlign.ALIGN_PARENT_LEFT ? RelativeLayout.TRUE : 0);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, align == PageIndicatorAlign.ALIGN_PARENT_RIGHT ? RelativeLayout.TRUE : 0);
-        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL, align == PageIndicatorAlign.CENTER_HORIZONTAL ? RelativeLayout.TRUE : 0);
-        loPageTurningPoint.setLayoutParams(layoutParams);
+    public ConvenientBanner setIndicatorGravity(int gravity) {
+        indicator.setGravity(Gravity.CENTER_VERTICAL | gravity);
         return this;
     }
 
@@ -246,7 +219,11 @@ public class ConvenientBanner extends LinearLayout {
     }
 
 
-    //获取当前的页面index
+    /**
+     * 获取当前的页面index
+     *
+     * @return
+     */
     public int getCurrentItem() {
         if (viewPager != null) {
             return viewPager.getRealPosition();
@@ -254,33 +231,17 @@ public class ConvenientBanner extends LinearLayout {
         return -1;
     }
 
-    //设置当前的页面index
-    public void setcurrentitem(int index) {
+    /**
+     * 设置当前的页面index
+     *
+     * @param index
+     */
+    public void setCurrentitem(int index) {
         if (viewPager != null) {
             viewPager.setCurrentItem(index);
         }
     }
 
-    public ViewPager.OnPageChangeListener getOnPageChangeListener() {
-        return onPageChangeListener;
-    }
-
-    /**
-     * 设置翻页监听器
-     *
-     * @param onPageChangeListener
-     * @return
-     */
-    public ConvenientBanner setOnPageChangeListener(ViewPager.OnPageChangeListener onPageChangeListener) {
-        this.onPageChangeListener = onPageChangeListener;
-        //如果有默认的监听器（即是使用了默认的翻页指示器）则把用户设置的依附到默认的上面，否则就直接设置
-        if (pageChangeListener != null) {
-            pageChangeListener.setOnPageChangeListener(onPageChangeListener);
-        } else {
-            viewPager.setOnPageChangeListener(onPageChangeListener);
-        }
-        return this;
-    }
 
     public boolean isCanLoop() {
         return viewPager.isCanLoop();
@@ -326,4 +287,7 @@ public class ConvenientBanner extends LinearLayout {
     }
 
 
+    public List getDatas() {
+        return viewPager.getDatas();
+    }
 }
