@@ -24,9 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:banner_turningTime="3000"
-        app:banner_isOneDataOffLoopAndTurning="false"
-        app:banner_isCanTouchScroll="true"
         app:banner_ratio="2" />
 
 </LinearLayout>

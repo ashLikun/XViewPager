@@ -97,6 +97,10 @@ public class ConvenientBanner extends RelativeLayout {
         addIndicatorView();
     }
 
+    public IBannerIndicator getIndicator() {
+        return indicator;
+    }
+
     /**
      * 设置banner的数据
      *
