@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.ashlikun.xviewpager.indicator.DefaultIndicator;
 import com.ashlikun.xviewpager.indicator.IBannerIndicator;
+import com.ashlikun.xviewpager.indicator.TransIndicator;
 import com.ashlikun.xviewpager.indicator.ZoomIndicator;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
@@ -66,6 +67,8 @@ public class ConvenientBanner extends RelativeLayout {
             indicator = new DefaultIndicator(context, attrs);
         } else if (style == 2) {
             indicator = new ZoomIndicator(context, attrs);
+        } else if (style == 3) {
+            indicator = new TransIndicator(context, attrs);
         }
 
         indicator.setSpace((int) a.getDimension(R.styleable.ConvenientBanner_ind_space, ViewPagerUtils.dip2px(context, 3)));

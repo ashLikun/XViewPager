@@ -24,8 +24,12 @@
         <attr name="ind_select"></attr>
 
         <attr name="ind_style">
+            <!--默认指示器-->
             <enum name="ind_default" value="1"></enum>
+            <!--缩放的指示器-->
             <enum name="ind_zoom" value="2"></enum>
+            <!--平移的指示器-->
+            <enum name="ind_trans" value="3"></enum>
         </attr>
 
         <attr name="banner_canLoop"></attr>

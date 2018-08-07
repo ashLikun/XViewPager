@@ -50,7 +50,14 @@ dependencies {
          <attr name="ind_no_select" format="reference" />
          <!--选中的资源Id-->
          <attr name="ind_select" format="reference" />
-
+        <attr name="ind_style">
+            <!--默认指示器-->
+            <enum name="ind_default" value="1"></enum>
+            <!--缩放的指示器-->
+            <enum name="ind_zoom" value="2"></enum>
+            <!--平移的指示器-->
+            <enum name="ind_trans" value="3"></enum>
+        </attr>
 
         convenientBanner.setIndicator(new ZoomIndicator(this));
         bannerViewPager.setPages(this, new ArrayList(Arrays.asList(RESURL)));

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.ashlikun.glideutils.GlideUtils;
 import com.ashlikun.xviewpager.ConvenientBanner;
+import com.ashlikun.xviewpager.indicator.TransIndicator;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
 
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
         setContentView(R.layout.activity_main);
         bannerViewPager = findViewById(R.id.bannerViewPager);
         convenientBanner = findViewById(R.id.convenientBanner);
+        convenientBanner.setIndicator(new TransIndicator(this));
         bannerViewPager.setPages(this, new ArrayList(Arrays.asList(RESURL)));
         convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL)));
     }
