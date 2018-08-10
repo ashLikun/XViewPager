@@ -21,5 +21,5 @@ public interface ViewPageHelperListener<T> {
      * @param context
      * @return
      */
-    View createView(Context context, BannerViewPager banner, T data);
+    View createView(Context context, BannerViewPager banner, T data, int position);
 }

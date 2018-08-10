@@ -52,11 +52,12 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
     }
 
     @Override
-    public View createView(Context context, BannerViewPager banner, String data) {
+    public View createView(Context context, BannerViewPager banner, String data, int position) {
         ImageView imageView = new ImageView(context);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         GlideUtils.show(imageView, data);
         return imageView;
     }
+
 }

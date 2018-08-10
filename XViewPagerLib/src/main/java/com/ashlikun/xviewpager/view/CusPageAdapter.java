@@ -40,7 +40,7 @@ class CusPageAdapter<T> extends PagerAdapter {
         if (datas != null && !datas.isEmpty()) {
             data = datas.get(realPosition);
         }
-        View view = holderCreator.createView(viewPager.getContext(), viewPager, data);
+        View view = holderCreator.createView(viewPager.getContext(), viewPager, data, realPosition);
         container.addView(view);
         return view;
     }

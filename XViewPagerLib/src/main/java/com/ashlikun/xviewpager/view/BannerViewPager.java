@@ -118,7 +118,9 @@ public class BannerViewPager extends ViewPager {
                 case MotionEvent.ACTION_UP:
                     if (Math.abs(downX - ev.getX()) < SENS
                             && Math.abs(downY - ev.getY()) < SENS) {
-                        onItemClickListener.onItemClick((getRealPosition()));
+                        if (getDatas() != null && getRealPosition() < getDatas().size()) {
+                            onItemClickListener.onItemClick(this, getDatas().get(getRealPosition()), getRealPosition());
+                        }
                     }
                     break;
             }
