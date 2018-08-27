@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -18,9 +19,17 @@ import java.util.List;
  * 邮箱　　：496546144@qq.com
  * <p>
  * 功能介绍：viewpager显示fragment的适配器,用路由模式去寻找fragment
+ * 可以设置缓存fragment，第一次会使用Arouter去发现Fragment，后续就会缓存起来
  */
 
 public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
+    /**
+     * 是否缓存Fragment
+     */
+    protected boolean isCache = false;
+    /**
+     * 传递给fragment的参数
+     */
     public static final String POSITION = "fpa_POSITION";
     /**
      * 当前显示的Fragment
@@ -28,6 +37,10 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     Fragment currentFragment;
 
     private List<FragmentPagerItem> pagerItems;
+    /**
+     * 缓存时候的Fragment
+     */
+    private SparseArray<Fragment> chcheFragment;
 
     private FragmentPagerAdapter(FragmentManager fm, List<FragmentPagerItem> items) {
         super(fm);
@@ -46,13 +59,29 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        FragmentPagerItem item = pagerItems.get(position);
-        //添加一个告诉fragment当前是第几页
-        item.addParam(POSITION, position);
-        return (Fragment) ARouter.getInstance()
-                .build(item.path)
-                .with(item.param)
-                .navigation();
+
+        Fragment fragment = null;
+        if (isCache) {
+            if (chcheFragment == null) {
+                chcheFragment = new SparseArray<>();
+            }
+            if (chcheFragment.get(position) != null) {
+                fragment = chcheFragment.get(position);
+            }
+        }
+        if (fragment == null) {
+            FragmentPagerItem item = pagerItems.get(position);
+            //添加一个告诉fragment当前是第几页
+            item.addParam(POSITION, position);
+            fragment = (Fragment) ARouter.getInstance()
+                    .build(item.path)
+                    .with(item.param)
+                    .navigation();
+            if (isCache) {
+                chcheFragment.append(position, fragment);
+            }
+        }
+        return fragment;
     }
 
 
@@ -83,6 +112,24 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return (T) currentFragment;
     }
 
+    /**
+     * 是否缓存Fragment
+     */
+    public FragmentPagerAdapter setCache(boolean cache) {
+        isCache = cache;
+        return this;
+    }
+
+    /**
+     * 获取缓存的fragment
+     * 前提是开启缓存
+     *
+     * @param position
+     * @return
+     */
+    public Fragment getCacheFragment(int position) {
+        return chcheFragment.get(position);
+    }
 
     /**
      * @author　　: 李坤

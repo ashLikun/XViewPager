@@ -70,6 +70,9 @@ public class FragmentPagerItem implements Parcelable {
         if (param == null) {
             param = new Bundle();
         }
+        if (param.containsKey(key)) {
+            return this;
+        }
         if (value instanceof String) {
             param.putString(key, (String) value);
         } else if (value instanceof Integer) {
