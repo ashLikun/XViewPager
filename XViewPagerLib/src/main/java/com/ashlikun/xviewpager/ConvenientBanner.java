@@ -128,7 +128,7 @@ public class ConvenientBanner extends RelativeLayout {
         return this;
     }
 
-    public ConvenientBanner setPages(final ViewPageHelperListener holderCreator, final List<Object> datas) {
+    public ConvenientBanner setPages(final ViewPageHelperListener holderCreator, final List datas) {
         if (datas == null) {
             return this;
         }

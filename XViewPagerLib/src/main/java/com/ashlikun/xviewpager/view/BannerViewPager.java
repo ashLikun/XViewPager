@@ -313,7 +313,7 @@ public class BannerViewPager extends ViewPager {
      *
      * @param datas
      */
-    public BannerViewPager setPages(final List<Object> datas) {
+    public BannerViewPager setPages(final List datas) {
         if (mAdapter == null) {
             throw new RuntimeException("没有发现holderCreator，请调用双参数的setPages");
         }
@@ -327,7 +327,7 @@ public class BannerViewPager extends ViewPager {
      *
      * @param datas
      */
-    public BannerViewPager setPages(final ViewPageHelperListener holderCreator, final List<Object> datas) {
+    public BannerViewPager setPages(final ViewPageHelperListener holderCreator, final List datas) {
         if (datas == null) {
             return this;
         }
