@@ -2,15 +2,14 @@ package com.ashlikun.xviewpager.view;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-;
 
 /**
  * 作者　　: 李坤
@@ -20,6 +19,7 @@ import java.util.Arrays;
  * 功能介绍：ViewPager嵌套滑动处理
  * 1：对于指定的控件嵌套滑动,百度地图，高德地图，RecyclerView
  * 2:ViewPager是否可以左右滑动{@link #setCanSlide}
+ * 3:外层是下拉刷新控件可以处理嵌套滑动问题
  */
 
 public class NestViewPager extends ViewPager {
@@ -27,26 +27,32 @@ public class NestViewPager extends ViewPager {
     private static final String BAIDU_MAP2 = "com.baidu.mapapi.map.TextureMapView";
     private static final String GAODE_MAP1 = "com.amap.api.maps.MapView";
     private static final String GAODE_MAP2 = "com.amap.api.maps.TextureMapView";
-
+    private float startX, startY;
     private ArrayList<Class> classes;
     /**
      * ViewPager是否可以滑动
      */
     private boolean isCanSlide = true;
+    private View refreshLayout;
+    private int touchSlop;
 
     public NestViewPager(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public NestViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initView();
+    }
+
+    private void initView() {
+        touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     @Override
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
         String className = v.getClass().getName();
-        return v instanceof RecyclerView
-                || super.canScroll(v, checkV, dx, x, y)
+        return super.canScroll(v, checkV, dx, x, y)
                 || BAIDU_MAP1.equals(className)
                 || BAIDU_MAP2.equals(className)
                 || GAODE_MAP1.equals(className)
@@ -54,34 +60,49 @@ public class NestViewPager extends ViewPager {
                 || (classes != null && classes.contains(className));
     }
 
-    protected boolean isNeastClass(Class cls) {
-        if (classes == null) {
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!isCanSlide) {
             return false;
-        }
-        for (Class c : classes) {
-            if (c.isAssignableFrom(cls)) {
-                return true;
+        } else {
+            if (refreshLayout != null) {
+                int action = ev.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // 记录手指按下的位置
+                        startY = ev.getY();
+                        startX = ev.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // 获取当前手指位置
+                        float endY = ev.getY();
+                        float endX = ev.getX();
+                        float distanceX = Math.abs(endX - startX);
+                        float distanceY = Math.abs(endY - startY);
+                        if (distanceX > touchSlop && distanceX > distanceY) {
+                            refreshLayout.setEnabled(false);
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        refreshLayout.setEnabled(true);
+                        break;
+                    default:
+                        break;
+                }
             }
+            return super.onTouchEvent(ev);
         }
-        return false;
     }
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent arg0) {
-        if (isCanSlide) {
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!isCanSlide) {
             return false;
         } else {
-            return super.onTouchEvent(arg0);
-        }
-    }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent arg0) {
-        if (isCanSlide) {
-            return false;
-        } else {
-            return super.onInterceptTouchEvent(arg0);
+            return super.onInterceptTouchEvent(ev);
         }
     }
 
@@ -102,5 +123,15 @@ public class NestViewPager extends ViewPager {
      */
     public void setCanSlide(boolean canSlide) {
         isCanSlide = canSlide;
+    }
+
+    /**
+     * 设置下拉刷新控件
+     * 在滑动的时候会判断是否禁用下拉刷新
+     *
+     * @param refreshLayout
+     */
+    public void setRefreshLayout(View refreshLayout) {
+        this.refreshLayout = refreshLayout;
     }
 }
