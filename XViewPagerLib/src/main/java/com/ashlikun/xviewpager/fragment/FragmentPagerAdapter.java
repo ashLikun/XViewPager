@@ -42,9 +42,10 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
      */
     private SparseArray<Fragment> chcheFragment;
 
-    private FragmentPagerAdapter(FragmentManager fm, List<FragmentPagerItem> items) {
-        super(fm);
-        this.pagerItems = items;
+    private FragmentPagerAdapter(Builder builder) {
+        super(builder.fm);
+        this.pagerItems = builder.items;
+        this.isCache = builder.isCache;
     }
 
     public List<FragmentPagerItem> getPagerItems() {
@@ -112,13 +113,6 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return (T) currentFragment;
     }
 
-    /**
-     * 是否缓存Fragment
-     */
-    public FragmentPagerAdapter setCache(boolean cache) {
-        isCache = cache;
-        return this;
-    }
 
     /**
      * 获取缓存的fragment
@@ -141,6 +135,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     public static class Builder {
         FragmentManager fm;
         List<FragmentPagerItem> items = new ArrayList<>();
+        boolean isCache = false;
 
         private Builder(FragmentManager fm) {
             this.fm = fm;
@@ -167,8 +162,16 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
             return item;
         }
 
+        /**
+         * 是否缓存Fragment
+         */
+        public Builder setCache(boolean cache) {
+            isCache = cache;
+            return this;
+        }
+
         public FragmentPagerAdapter build() {
-            return new FragmentPagerAdapter(fm, items);
+            return new FragmentPagerAdapter(this);
         }
     }
 }
