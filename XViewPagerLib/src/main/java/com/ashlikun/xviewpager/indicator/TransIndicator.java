@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,10 +85,15 @@ public class TransIndicator extends IBannerIndicator {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        if (pointViews.size() < 2) {
+        if (pointViews.size() < 1) {
             return;
         }
         pointViews.get(0).getLocationOnScreen(firstPosition);
+        if (pointViews.size() == 1) {
+            moveSize = pointViews.get(0).getWidth() + space * 2;
+            moveDistance = firstPosition[0] - moveSize;
+            return;
+        }
         pointViews.get(1).getLocationOnScreen(secondPositon);
         moveSize = secondPositon[0] - firstPosition[0];
         moveDistance = firstPosition[0] - moveSize + currentSelect * moveSize;
@@ -124,6 +128,7 @@ public class TransIndicator extends IBannerIndicator {
             pointViews.add(pointView);
             addView(pointView, params);
         }
+
         return this;
     }
 
@@ -137,7 +142,6 @@ public class TransIndicator extends IBannerIndicator {
 
     @Override
     public void onPointScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        Log.e("aaaa", "position = " + position + "    positionOffset = " + positionOffset + "    positionOffsetPixels = " + positionOffsetPixels);
         if (position == pointViews.size() - 1 && positionOffset > 0) {
             //最后一个向第一个移动
             moveDistance = firstPosition[0] - moveSize;

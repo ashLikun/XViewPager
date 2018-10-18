@@ -99,8 +99,8 @@ public class ConvenientBanner extends RelativeLayout {
      * @param ind
      */
     public void setIndicator(IBannerIndicator ind) {
-        removeView(indicator);
         if (indicator != null) {
+            removeView(indicator);
             ind.setSpace(indicator.getSpace());
             ind.setSelectDraw(indicator.getSelectDraw(), getCurrentItem());
             ind.setNoSelectDraw(indicator.getNoSelectDraw(), getCurrentItem());

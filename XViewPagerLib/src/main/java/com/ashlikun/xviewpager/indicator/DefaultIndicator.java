@@ -96,7 +96,6 @@ public class DefaultIndicator extends IBannerIndicator {
 
     @Override
     public void onPointSelected(int selectIndex) {
-        selectIndex = ViewPagerUtils.getRealPosition(selectIndex, pointViews.size());
         if (selectIndex < pointViews.size()) {
             pointViews.get(selectIndex).setBackground(selectDraw);
         }
