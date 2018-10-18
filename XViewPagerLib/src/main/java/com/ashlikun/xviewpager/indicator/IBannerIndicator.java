@@ -101,13 +101,17 @@ public abstract class IBannerIndicator extends LinearLayout implements ViewPager
 
     }
 
+    public int getItemCount() {
+        return datas == null ? 0 : datas.size();
+    }
+
     @Override
     public final void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (pointViews == null) {
+        if (datas == null) {
             return;
         }
-        position = ViewPagerUtils.getRealPosition(position, pointViews.size());
-        if (position >= pointViews.size()) {
+        position = ViewPagerUtils.getRealPosition(position, getItemCount());
+        if (position >= getItemCount()) {
             return;
         }
         onPointScrolled(position, positionOffset, positionOffsetPixels);
@@ -115,11 +119,11 @@ public abstract class IBannerIndicator extends LinearLayout implements ViewPager
 
     @Override
     public final void onPageSelected(int position) {
-        if (pointViews == null) {
+        if (datas == null) {
             return;
         }
-        position = ViewPagerUtils.getRealPosition(position, pointViews.size());
-        if (position >= pointViews.size()) {
+        position = ViewPagerUtils.getRealPosition(position, getItemCount());
+        if (position >= getItemCount()) {
             return;
         }
         onPointSelected(position);
