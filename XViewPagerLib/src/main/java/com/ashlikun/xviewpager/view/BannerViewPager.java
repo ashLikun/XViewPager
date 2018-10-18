@@ -352,6 +352,9 @@ public class BannerViewPager extends ViewPager {
     }
 
     public List<Object> getDatas() {
+        if (mAdapter == null) {
+            return null;
+        }
         return mAdapter.datas;
     }
 
