@@ -118,7 +118,7 @@ public class ConvenientBanner extends RelativeLayout {
      *
      * @param datas
      */
-    public ConvenientBanner setPages(final List<Object> datas) {
+    public ConvenientBanner setPages(final List datas) {
         if (datas == null) {
             return this;
         }
