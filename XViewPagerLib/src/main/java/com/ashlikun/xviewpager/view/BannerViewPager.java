@@ -5,12 +5,11 @@ import android.content.res.TypedArray;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
+import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.ViewPagerUtils;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
-import com.ashlikun.xviewpager.R;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -366,23 +365,22 @@ public class BannerViewPager extends ViewPager {
         return turning;
     }
 
-    /**
-     * 如果退出了，自动停止，进来则自动开始
-     *
-     * @param visibility
-     */
+
     @Override
-    protected void onWindowVisibilityChanged(int visibility) {
-        super.onWindowVisibilityChanged(visibility);
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         if (canLoop && isAutoTurning) {
-            if (visibility == View.VISIBLE) {
-                startTurning();
-            } else {
-                stopTurning();
-            }
+            startTurning();
         }
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (canLoop && isAutoTurning) {
+            stopTurning();
+        }
+    }
 
     /**
      * 是否只有一条数据的时候禁用翻页
