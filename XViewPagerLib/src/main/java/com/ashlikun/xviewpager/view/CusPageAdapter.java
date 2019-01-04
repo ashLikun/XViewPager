@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ashlikun.xviewpager.ViewPagerUtils;
+import com.ashlikun.xviewpager.listener.PageWidthListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 
 import java.util.List;
@@ -20,6 +21,7 @@ class CusPageAdapter<T> extends PagerAdapter {
     private final int MULTIPLE_COUNT = 3000;
     protected List<T> datas;
     protected ViewPageHelperListener holderCreator;
+    protected PageWidthListener pageWidthListener;
     private boolean canLoop = true;
     private int POSITION_CHANG = POSITION_UNCHANGED;
     private BannerViewPager viewPager;
@@ -79,6 +81,18 @@ class CusPageAdapter<T> extends PagerAdapter {
         this.viewPager = bannerViewPager;
         this.holderCreator = holderCreator;
         this.datas = datas;
+    }
+
+    public void setPageWidthListener(PageWidthListener pageWidthListener) {
+        this.pageWidthListener = pageWidthListener;
+    }
+
+    @Override
+    public float getPageWidth(int position) {
+        if (pageWidthListener != null) {
+            return pageWidthListener.getPageWidth(position);
+        }
+        return super.getPageWidth(position);
     }
 
     @Override

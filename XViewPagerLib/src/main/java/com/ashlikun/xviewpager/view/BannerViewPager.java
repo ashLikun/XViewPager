@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.ViewPagerUtils;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
+import com.ashlikun.xviewpager.listener.PageWidthListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 
 import java.lang.ref.WeakReference;
@@ -49,6 +50,7 @@ public class BannerViewPager extends ViewPager {
     private float downX = 0, downY = 0;
 
     private AdSwitchTask adSwitchTask;
+    private PageWidthListener pageWidthListener;
 
     public BannerViewPager(Context context) {
         this(context, null);
@@ -339,6 +341,7 @@ public class BannerViewPager extends ViewPager {
             mAdapter.setDatas(datas);
             mAdapter.notifyDataSetChanged();
         }
+        mAdapter.setPageWidthListener(pageWidthListener);
         setCurrentItem(getFristItem(), false);
 
         if (turning) {
@@ -348,6 +351,13 @@ public class BannerViewPager extends ViewPager {
 
         }
         return this;
+    }
+
+    public void setPageWidthListener(PageWidthListener pageWidthListener) {
+        this.pageWidthListener = pageWidthListener;
+        if (mAdapter != null) {
+            mAdapter.setPageWidthListener(pageWidthListener);
+        }
     }
 
     public List<Object> getDatas() {
