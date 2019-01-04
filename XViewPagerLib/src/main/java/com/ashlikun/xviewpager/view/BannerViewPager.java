@@ -292,15 +292,25 @@ public class BannerViewPager extends ViewPager {
         this.onItemClickListener = onItemClickListener;
     }
 
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (ratio <= 0) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-            return;
-        }
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int height = (int) (widthSize / ratio);
-        super.onMeasure(MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+        if (ratio > 0) {
+            if (orientation == 0) {
+                //宽度不变
+                heightSize = (int) (widthSize / ratio);
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize,
+                        MeasureSpec.EXACTLY);
+            } else {
+                //高度不变
+                widthSize = (int) (heightSize / ratio);
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize,
+                        MeasureSpec.EXACTLY);
+            }
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     public void notifyDataSetChanged() {
