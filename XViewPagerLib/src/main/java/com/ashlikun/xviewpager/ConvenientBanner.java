@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 import com.ashlikun.xviewpager.indicator.DefaultIndicator;
 import com.ashlikun.xviewpager.indicator.IBannerIndicator;
@@ -30,12 +30,21 @@ import java.util.List;
  * 功能介绍：封装带有指示器的banner
  */
 
-public class ConvenientBanner extends RelativeLayout {
+public class ConvenientBanner extends FrameLayout {
 
 
     private BannerViewPager viewPager;
     private ViewPagerScroller scroller;
-
+    /**
+     * 缩放比例
+     */
+    private float ratio = 0f;
+    /**
+     * 按照那个值为基础
+     * 0:宽度
+     * 1：高度
+     */
+    private int orientation = 0;
 
     private IBannerIndicator indicator;
 
@@ -60,7 +69,7 @@ public class ConvenientBanner extends RelativeLayout {
         viewPager.setCanLoop(a.getBoolean(R.styleable.ConvenientBanner_banner_canLoop, true));
         viewPager.setOneDataOffLoopAndTurning(a.getBoolean(R.styleable.ConvenientBanner_banner_isOneDataOffLoopAndTurning, true));
         viewPager.setTurningTime(a.getInt(R.styleable.ConvenientBanner_banner_turningTime, (int) BannerViewPager.DEFAULT_TURNING_TIME));
-        viewPager.setRatio(a.getFloat(R.styleable.ConvenientBanner_banner_ratio, BannerViewPager.DEFAULT_RATIO));
+
         viewPager.setCanTouchScroll(a.getBoolean(R.styleable.ConvenientBanner_banner_isCanTouchScroll, true));
         int style = a.getInt(R.styleable.ConvenientBanner_ind_style, 1);
         if (style == 1) {
@@ -74,8 +83,11 @@ public class ConvenientBanner extends RelativeLayout {
         indicator.setSpace((int) a.getDimension(R.styleable.ConvenientBanner_ind_space, ViewPagerUtils.dip2px(context, 3)));
         indicator.setSelectDraw(a.getDrawable(R.styleable.ConvenientBanner_ind_select), 0);
         indicator.setNoSelectDraw(a.getDrawable(R.styleable.ConvenientBanner_ind_no_select), 0);
-
+        ratio = a.getFloat(R.styleable.ConvenientBanner_banner_ratio, BannerViewPager.DEFAULT_RATIO);
+        orientation = a.getInt(R.styleable.ConvenientBanner_banner_orientation, 0);
         a.recycle();
+        viewPager.setRatio(ratio);
+        viewPager.setOrientation(orientation);
         viewPager.setId(10086);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(viewPager, params);
@@ -84,12 +96,35 @@ public class ConvenientBanner extends RelativeLayout {
 
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        if (ratio != 0) {
+            if (orientation == 0) {
+                //宽度不变
+                heightSize = (int) (widthSize / ratio);
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize,
+                        MeasureSpec.EXACTLY);
+            } else {
+                //高度不变
+                widthSize = (int) (heightSize / ratio);
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize,
+                        MeasureSpec.EXACTLY);
+            }
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     private void addIndicatorView() {
-        LayoutParams params2 = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        params2.addRule(RelativeLayout.ALIGN_BOTTOM, 10086);
-        int dp10 = ViewPagerUtils.dip2px(getContext(), 10);
-        params2.setMargins(dp10, dp10, dp10, dp10);
-        addView(indicator, params2);
+        if (indicator.getLayoutParams() == null) {
+            LayoutParams params2 = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            int dp10 = ViewPagerUtils.dip2px(getContext(), 10);
+            params2.gravity = Gravity.BOTTOM;
+            params2.setMargins(dp10, dp10, dp10, dp10);
+            indicator.setLayoutParams(params2);
+        }
+        addView(indicator);
         viewPager.addOnPageChangeListener(indicator);
     }
 
@@ -305,5 +340,29 @@ public class ConvenientBanner extends RelativeLayout {
 
     public List getDatas() {
         return viewPager.getDatas();
+    }
+
+    /**
+     * 设置比例
+     *
+     * @param ratio
+     */
+    public void setRatio(float ratio) {
+        if (this.ratio != ratio) {
+            this.ratio = ratio;
+            requestLayout();
+        }
+    }
+
+    /**
+     * 设置方向
+     *
+     * @param orientation
+     */
+    public void setOrientation(int orientation) {
+        if (this.orientation != orientation) {
+            this.orientation = orientation;
+            requestLayout();
+        }
     }
 }

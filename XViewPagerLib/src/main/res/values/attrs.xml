@@ -18,8 +18,17 @@
     <attr name="ind_no_select" format="reference" />
     <!--选中的资源Id-->
     <attr name="ind_select" format="reference" />
+    <!--比例-->
+    <attr name="cb_ratio" format="reference|float"></attr>
+    <!--参考方向-->
+    <attr name="cb_orientation">
+        <enum name="width" value="0" />
+        <enum name="height" value="1" />
+    </attr>
     <declare-styleable name="ConvenientBanner">
         <attr name="ind_space"></attr>
+        <attr name="banner_ratio"></attr>
+        <attr name="banner_orientation"></attr>
         <attr name="ind_no_select"></attr>
         <attr name="ind_select"></attr>
 
@@ -34,7 +43,6 @@
 
         <attr name="banner_canLoop"></attr>
         <attr name="banner_turningTime"></attr>
-        <attr name="banner_ratio"></attr>
         <attr name="banner_isCanTouchScroll"></attr>
         <attr name="banner_isOneDataOffLoopAndTurning"></attr>
     </declare-styleable>
@@ -43,6 +51,7 @@
         <attr name="banner_canLoop"></attr>
         <attr name="banner_turningTime"></attr>
         <attr name="banner_ratio"></attr>
+        <attr name="banner_orientation"></attr>
         <attr name="banner_isCanTouchScroll"></attr>
         <attr name="banner_isOneDataOffLoopAndTurning"></attr>
     </declare-styleable>

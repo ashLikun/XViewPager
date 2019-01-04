@@ -45,8 +45,16 @@ public class BannerViewPager extends ViewPager {
     private boolean isOneDataOffLoopAndTurning = true;
     //是否可以自动滚动，内部用于判断触摸屏幕，与view进入焦点
     private boolean isAutoTurning = false;
-    //大小比例，按照宽度
+    /**
+     * 缩放比例
+     */
     private float ratio = DEFAULT_RATIO;
+    /**
+     * 按照那个值为基础
+     * 0:宽度
+     * 1：高度
+     */
+    private int orientation = 0;
     private float downX = 0, downY = 0;
 
     private AdSwitchTask adSwitchTask;
@@ -66,7 +74,8 @@ public class BannerViewPager extends ViewPager {
         canLoop = a.getBoolean(R.styleable.BannerViewPager_banner_canLoop, canLoop);
         isOneDataOffLoopAndTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isOneDataOffLoopAndTurning, isOneDataOffLoopAndTurning);
         turningTime = a.getInteger(R.styleable.BannerViewPager_banner_turningTime, (int) turningTime);
-        ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, ratio);
+        ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, 0);
+        orientation = a.getInt(R.styleable.BannerViewPager_banner_orientation, 0);
         isCanTouchScroll = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isCanTouchScroll);
         a.recycle();
         setTurningTime(turningTime);
@@ -82,14 +91,6 @@ public class BannerViewPager extends ViewPager {
             isAutoTurning = true;
         }
     }
-
-    public void setRatio(float ratio) {
-        if (this.ratio != ratio) {
-            this.ratio = ratio;
-            requestLayout();
-        }
-    }
-
 
     public int getFristItem() {
         return canLoop ? mAdapter.getRealCount() : 0;
@@ -436,6 +437,30 @@ public class BannerViewPager extends ViewPager {
                     bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime);
                 }
             }
+        }
+    }
+
+    /**
+     * 设置比例
+     *
+     * @param ratio
+     */
+    public void setRatio(float ratio) {
+        if (this.ratio != ratio) {
+            this.ratio = ratio;
+            requestLayout();
+        }
+    }
+
+    /**
+     * 设置方向
+     *
+     * @param orientation
+     */
+    public void setOrientation(int orientation) {
+        if (this.orientation != orientation) {
+            this.orientation = orientation;
+            requestLayout();
         }
     }
 }
