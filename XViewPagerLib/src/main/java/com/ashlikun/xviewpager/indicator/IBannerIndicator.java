@@ -1,6 +1,7 @@
 package com.ashlikun.xviewpager.indicator;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.ViewPagerUtils;
 
 import java.util.ArrayList;
@@ -45,6 +47,17 @@ public abstract class IBannerIndicator extends LinearLayout implements ViewPager
 
     public IBannerIndicator(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IBannerIndicator);
+        space = (int) a.getDimension(R.styleable.IBannerIndicator_ind_space, ViewPagerUtils.dip2px(context, space));
+        selectDraw = a.getDrawable(R.styleable.IBannerIndicator_ind_select);
+        noSelectDraw = a.getDrawable(R.styleable.IBannerIndicator_ind_no_select);
+        if (selectDraw == null) {
+            selectDraw = getResources().getDrawable(R.drawable.banner_circle_select);
+        }
+        if (noSelectDraw == null) {
+            noSelectDraw = getResources().getDrawable(R.drawable.banner_circle_default);
+        }
+        a.recycle();
         initView(context, attrs);
     }
 

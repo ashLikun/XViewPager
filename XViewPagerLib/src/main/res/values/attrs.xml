@@ -54,7 +54,7 @@
         <attr name="banner_isOneDataOffLoopAndTurning"></attr>
     </declare-styleable>
 
-    <declare-styleable name="DefaultIndicator">
+    <declare-styleable name="IBannerIndicator">
         <attr name="ind_space"></attr>
         <attr name="ind_no_select"></attr>
         <attr name="ind_select"></attr>

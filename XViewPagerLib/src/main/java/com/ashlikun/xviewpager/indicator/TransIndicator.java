@@ -54,17 +54,6 @@ public class TransIndicator extends IBannerIndicator {
 
     @Override
     protected void initView(Context context, AttributeSet attrs) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DefaultIndicator);
-        space = (int) a.getDimension(R.styleable.DefaultIndicator_ind_select, ViewPagerUtils.dip2px(context, space));
-        selectDraw = a.getDrawable(R.styleable.DefaultIndicator_ind_select);
-        noSelectDraw = a.getDrawable(R.styleable.DefaultIndicator_ind_no_select);
-        if (selectDraw == null) {
-            selectDraw = getResources().getDrawable(R.drawable.banner_circle_select);
-        }
-        if (noSelectDraw == null) {
-            noSelectDraw = getResources().getDrawable(R.drawable.banner_circle_default);
-        }
-        a.recycle();
         setGravity(Gravity.CENTER);
         setClipChildren(false);
         setClipToPadding(false);
