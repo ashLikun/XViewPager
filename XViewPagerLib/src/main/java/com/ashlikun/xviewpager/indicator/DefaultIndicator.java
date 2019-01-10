@@ -1,7 +1,6 @@
 package com.ashlikun.xviewpager.indicator;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -9,9 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.ashlikun.xviewpager.R;
-import com.ashlikun.xviewpager.ViewPagerUtils;
 
 import java.util.List;
 
@@ -43,8 +39,7 @@ public class DefaultIndicator extends IBannerIndicator {
 
     @Override
     public DefaultIndicator setPages(List<Object> datas, int selectIndex) {
-        this.datas = datas;
-        this.notifyDataSetChanged(selectIndex);
+        super.setPages(datas, selectIndex);
         return this;
     }
 
