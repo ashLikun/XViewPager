@@ -97,10 +97,14 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
      * @return
      */
     public int findIdPosition(String id) {
-        for (int i = 0; i < getCount(); i++) {
-            if (TextUtils.equals(id, getPagerItem(i).getId())) {
-                return i;
+        try {
+            for (int i = 0; i < getCount(); i++) {
+                if (TextUtils.equals(id, getPagerItem(i).getId())) {
+                    return i;
+                }
             }
+        }catch (Exception e){
+
         }
         return -1;
     }
