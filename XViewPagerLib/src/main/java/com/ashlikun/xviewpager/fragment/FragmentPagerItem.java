@@ -24,7 +24,7 @@ public class FragmentPagerItem implements Serializable {
      */
     protected CharSequence title;
     /**
-     * fragment 的id,可以null
+     * id,缓存数据
      */
     protected String id;
 
@@ -60,6 +60,26 @@ public class FragmentPagerItem implements Serializable {
     public FragmentPagerItem setParam(Bundle param) {
         this.param = param;
         return this;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public CharSequence getTitle() {
+        return title;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Bundle getParam() {
+        return param;
+    }
+
+    public FragmentPagerAdapter.Builder getBuilder() {
+        return builder;
     }
 
     public FragmentPagerItem addParam(String key, Object value) {
