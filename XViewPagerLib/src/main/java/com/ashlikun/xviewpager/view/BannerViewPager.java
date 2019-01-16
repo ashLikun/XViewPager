@@ -130,7 +130,7 @@ public class BannerViewPager extends ViewPager {
         if (isCanTouchScroll && !isOneDataOffLoopAndTurning()) {
             return super.onTouchEvent(ev);
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -139,7 +139,7 @@ public class BannerViewPager extends ViewPager {
         if (isCanTouchScroll && !isOneDataOffLoopAndTurning()) {
             return super.onInterceptTouchEvent(ev);
         } else {
-            return true;
+            return false;
         }
     }
 
