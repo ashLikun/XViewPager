@@ -75,7 +75,11 @@ public abstract class IBannerIndicator extends LinearLayout implements ViewPager
      *
      * @param datas
      */
-    public abstract IBannerIndicator setPages(List<Object> datas, int selectIndex);
+    public IBannerIndicator setPages(List<Object> datas, int selectIndex) {
+        this.datas = datas;
+        this.notifyDataSetChanged(selectIndex);
+        return this;
+    }
 
     public void setSpace(int space) {
         this.space = space;

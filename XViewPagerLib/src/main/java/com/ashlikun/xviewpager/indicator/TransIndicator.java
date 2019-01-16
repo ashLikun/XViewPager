@@ -1,7 +1,6 @@
 package com.ashlikun.xviewpager.indicator;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -11,9 +10,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.ashlikun.xviewpager.R;
-import com.ashlikun.xviewpager.ViewPagerUtils;
 
 import java.util.List;
 
@@ -90,8 +86,7 @@ public class TransIndicator extends IBannerIndicator {
 
     @Override
     public TransIndicator setPages(List<Object> datas, int selectIndex) {
-        this.datas = datas;
-        this.notifyDataSetChanged(selectIndex);
+        super.setPages(datas, selectIndex);
         return this;
     }
 

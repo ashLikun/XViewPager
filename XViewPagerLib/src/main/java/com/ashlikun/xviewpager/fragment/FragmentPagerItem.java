@@ -1,7 +1,6 @@
 package com.ashlikun.xviewpager.fragment;
 
 import android.os.Bundle;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -15,7 +14,7 @@ import java.io.Serializable;
  * 功能介绍：{@link FragmentPagerAdapter}
  * ViewPager的Fragment 适配器的item参数
  */
-public class FragmentPagerItem implements Parcelable {
+public class FragmentPagerItem implements Serializable {
     /**
      * 必须参数,路由路径
      */
@@ -23,9 +22,9 @@ public class FragmentPagerItem implements Parcelable {
     /**
      * fragment 的title,
      */
-    protected String title;
+    protected CharSequence title;
     /**
-     * fragment 的id,可以null
+     * id,缓存数据
      */
     protected String id;
 
@@ -48,7 +47,7 @@ public class FragmentPagerItem implements Parcelable {
         return this;
     }
 
-    public FragmentPagerItem setTitle(String title) {
+    public FragmentPagerItem setTitle(CharSequence title) {
         this.title = title;
         return this;
     }
@@ -61,6 +60,26 @@ public class FragmentPagerItem implements Parcelable {
     public FragmentPagerItem setParam(Bundle param) {
         this.param = param;
         return this;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public CharSequence getTitle() {
+        return title;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Bundle getParam() {
+        return param;
+    }
+
+    public FragmentPagerAdapter.Builder getBuilder() {
+        return builder;
     }
 
     public FragmentPagerItem addParam(String key, Object value) {
@@ -111,39 +130,4 @@ public class FragmentPagerItem implements Parcelable {
     public static FragmentPagerItem get(String path) {
         return new FragmentPagerItem(path);
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.path);
-        dest.writeString(this.title);
-        dest.writeString(this.id);
-        dest.writeBundle(this.param);
-    }
-
-    public FragmentPagerItem() {
-    }
-
-    protected FragmentPagerItem(Parcel in) {
-        this.path = in.readString();
-        this.title = in.readString();
-        this.id = in.readString();
-        this.param = in.readBundle();
-    }
-
-    public static final Parcelable.Creator<FragmentPagerItem> CREATOR = new Parcelable.Creator<FragmentPagerItem>() {
-        @Override
-        public FragmentPagerItem createFromParcel(Parcel source) {
-            return new FragmentPagerItem(source);
-        }
-
-        @Override
-        public FragmentPagerItem[] newArray(int size) {
-            return new FragmentPagerItem[size];
-        }
-    };
 }

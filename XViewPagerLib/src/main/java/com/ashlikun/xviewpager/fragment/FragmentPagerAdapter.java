@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -52,6 +53,10 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return pagerItems;
     }
 
+    public FragmentPagerItem getPagerItem(int position) {
+        return pagerItems.get(position);
+    }
+
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
@@ -85,6 +90,24 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return fragment;
     }
 
+    /**
+     * 查找这个id对应 的position
+     *
+     * @param id
+     * @return
+     */
+    public int findIdPosition(String id) {
+        try {
+            for (int i = 0; i < getCount(); i++) {
+                if (TextUtils.equals(id, getPagerItem(i).getId())) {
+                    return i;
+                }
+            }
+        }catch (Exception e){
+
+        }
+        return -1;
+    }
 
     @Override
     public int getCount() {

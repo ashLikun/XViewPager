@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ashlikun.glideutils.GlideUtils;
 import com.ashlikun.xviewpager.ConvenientBanner;
 import com.ashlikun.xviewpager.indicator.TransIndicator;
+import com.ashlikun.xviewpager.listener.OnItemClickListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
 
@@ -37,6 +39,12 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
         convenientBanner.setIndicator(new TransIndicator(this));
         bannerViewPager.setPages(this, new ArrayList(Arrays.asList(RESURL2)));
         convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL2)));
+        convenientBanner.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(BannerViewPager banner, Object data, int position) {
+                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void onClick(View view) {
@@ -57,6 +65,12 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
         GlideUtils.show(imageView, data);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "aaaaa", Toast.LENGTH_LONG).show();
+            }
+        });
         return imageView;
     }
 

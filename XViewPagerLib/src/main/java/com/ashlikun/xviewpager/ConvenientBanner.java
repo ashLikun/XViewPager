@@ -15,6 +15,7 @@ import com.ashlikun.xviewpager.indicator.DefaultIndicator;
 import com.ashlikun.xviewpager.indicator.IBannerIndicator;
 import com.ashlikun.xviewpager.indicator.TransIndicator;
 import com.ashlikun.xviewpager.indicator.ZoomIndicator;
+import com.ashlikun.xviewpager.listener.OnBannerPageChangeListener;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
@@ -62,7 +63,7 @@ public class ConvenientBanner extends RelativeLayout {
         viewPager.setCanLoop(a.getBoolean(R.styleable.ConvenientBanner_banner_canLoop, true));
         viewPager.setOneDataOffLoopAndTurning(a.getBoolean(R.styleable.ConvenientBanner_banner_isOneDataOffLoopAndTurning, true));
         viewPager.setTurningTime(a.getInt(R.styleable.ConvenientBanner_banner_turningTime, (int) BannerViewPager.DEFAULT_TURNING_TIME));
-
+        viewPager.setAutoTurning(a.getBoolean(R.styleable.ConvenientBanner_banner_isAutoTurning, true));
         viewPager.setCanTouchScroll(a.getBoolean(R.styleable.ConvenientBanner_banner_isCanTouchScroll, true));
         int style = a.getInt(R.styleable.ConvenientBanner_ind_style, 1);
         if (style == 1) {
@@ -278,12 +279,18 @@ public class ConvenientBanner extends RelativeLayout {
      * @param onItemClickListener
      */
     public ConvenientBanner setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        if (onItemClickListener == null) {
-            viewPager.setOnItemClickListener(null);
-            return this;
-        }
         viewPager.setOnItemClickListener(onItemClickListener);
         return this;
+    }
+
+    /**
+     * 还原原始的position翻页监听
+     * {@link com.ashlikun.xviewpager.listener.OnBannerPageChangeListener}
+     *
+     * @param listener
+     */
+    public void setOnBannerChangeListener(OnBannerPageChangeListener listener) {
+        viewPager.setOnBannerChangeListener(listener);
     }
 
     /**

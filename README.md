@@ -33,31 +33,30 @@ dependencies {
                 app:banner_ratio="2" />
 
          <!--是否可以循环 默认true-->
-         <attr name="banner_canLoop" format="boolean" />
-         <!--自动播放时间间隔 默认5000-->
-         <attr name="banner_turningTime" format="integer" />
-         <!--大小比例，按照宽度 默认16/9.0f-->
-         <attr name="banner_ratio" format="float" />
-         <!--是否可以触摸, 默认true-->
-         <attr name="banner_isCanTouchScroll" format="boolean" />
-         <!--是否只有一条数据的时候禁用翻页, 默认true-->
-         <attr name="banner_isOneDataOffLoopAndTurning" format="boolean" />
-
-         <!--Indicatorde 属性-->
-         <!--间距-->
-         <attr name="ind_space" format="dimension" />
-         <!--未选中的资源Id-->
-         <attr name="ind_no_select" format="reference" />
-         <!--选中的资源Id-->
-         <attr name="ind_select" format="reference" />
-        <attr name="ind_style">
-            <!--默认指示器-->
-            <enum name="ind_default" value="1"></enum>
-            <!--缩放的指示器-->
-            <enum name="ind_zoom" value="2"></enum>
-            <!--平移的指示器-->
-            <enum name="ind_trans" value="3"></enum>
-        </attr>
+            <attr name="banner_canLoop" format="boolean" />
+            <!--自动播放时间间隔 默认5000-->
+            <attr name="banner_turningTime" format="integer" />
+            <!--是否可以触摸滚动, 默认true-->
+            <attr name="banner_isCanTouchScroll" format="boolean" />
+            <!--是否可以自动定时翻页-->
+            <attr name="banner_isAutoTurning" format="boolean" />
+            <!--是否只有一条数据的时候禁用翻页, 默认true-->
+            <attr name="banner_isOneDataOffLoopAndTurning" format="boolean" />
+        
+            <!--Indicatorde 属性-->
+            <!--间距-->
+            <attr name="ind_space" format="dimension" />
+            <!--未选中的资源Id-->
+            <attr name="ind_no_select" format="reference" />
+            <!--选中的资源Id-->
+            <attr name="ind_select" format="reference" />
+            <!--比例   默认16/9.0f-->
+            <attr name="banner_ratio" format="reference|float"></attr>
+            <!--参考方向-->
+            <attr name="banner_orientation">
+                <enum name="width" value="0" />
+                <enum name="height" value="1" />
+            </attr>
 
         convenientBanner.setIndicator(new ZoomIndicator(this));
         bannerViewPager.setPages(this, new ArrayList(Arrays.asList(RESURL)));

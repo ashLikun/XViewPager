@@ -39,12 +39,15 @@ public class BannerViewPager extends ViewPager {
     private boolean canLoop = true;
     //自动轮播的间隔
     private long turningTime = DEFAULT_TURNING_TIME;
-    //是否可以自动滚动
+
+    //是否可以自动滚动,外部使用
+    private boolean isAutoTurning = true;
+    //是否可以自动滚动,内部标识
     private boolean turning = false;
     //是否只有一条数据的时候禁用翻页
     private boolean isOneDataOffLoopAndTurning = true;
     //是否可以自动滚动，内部用于判断触摸屏幕，与view进入焦点
-    private boolean isAutoTurning = false;
+    private boolean isNeibuAutoTurning = false;
     /**
      * 缩放比例
      */
@@ -77,6 +80,7 @@ public class BannerViewPager extends ViewPager {
         ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, 0);
         orientation = a.getInt(R.styleable.BannerViewPager_banner_orientation, 0);
         isCanTouchScroll = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isCanTouchScroll);
+        isAutoTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isAutoTurning);
         a.recycle();
         setTurningTime(turningTime);
         addOnPageChangeListener(onPageChangeListener);
@@ -88,7 +92,7 @@ public class BannerViewPager extends ViewPager {
         this.turningTime = turningTime;
         if (turningTime > 0) {
             turning = true;
-            isAutoTurning = true;
+            isNeibuAutoTurning = true;
         }
     }
 
@@ -130,7 +134,7 @@ public class BannerViewPager extends ViewPager {
         if (isCanTouchScroll && !isOneDataOffLoopAndTurning()) {
             return super.onTouchEvent(ev);
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -151,16 +155,16 @@ public class BannerViewPager extends ViewPager {
      */
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (isCanTouchScroll && !isOneDataOffLoopAndTurning()) {
+        if (isCanTouchScroll && isAutoTurning && !isOneDataOffLoopAndTurning()) {
             int action = ev.getAction();
             if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_OUTSIDE) {
                 // 开始翻页
-                if (isAutoTurning) {
+                if (isNeibuAutoTurning) {
                     startTurning(turningTime);
                 }
             } else if (action == MotionEvent.ACTION_DOWN) {
                 // 停止翻页
-                if (isAutoTurning) {
+                if (isNeibuAutoTurning) {
                     stopTurning();
                 }
             }
@@ -197,6 +201,12 @@ public class BannerViewPager extends ViewPager {
     }
 
 
+    /**
+     * 还原原始的position翻页监听
+     * {@link com.ashlikun.xviewpager.listener.OnBannerPageChangeListener}
+     *
+     * @param listener
+     */
     public void setOnBannerChangeListener(OnPageChangeListener listener) {
         mOuterPageChangeListener = listener;
     }
@@ -254,9 +264,10 @@ public class BannerViewPager extends ViewPager {
     /**
      * 手动停止
      */
-    public void stopTurning() {
+    public BannerViewPager stopTurning() {
         turning = false;
         removeCallbacks(adSwitchTask);
+        return this;
     }
 
     /**
@@ -273,12 +284,15 @@ public class BannerViewPager extends ViewPager {
      * 手动开始
      */
     public BannerViewPager startTurning(long turningTime) {
+        if (!isAutoTurning || turningTime <= 0) {
+            return this;
+        }
         //如果是正在翻页的话先停掉
         if (turning) {
             stopTurning();
         }
         //设置可以翻页并开启翻页
-        isAutoTurning = true;
+        isNeibuAutoTurning = true;
         this.turningTime = turningTime;
         turning = true;
         if (!isOneDataOffLoopAndTurning()) {
@@ -390,7 +404,7 @@ public class BannerViewPager extends ViewPager {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (canLoop && isAutoTurning) {
+        if (canLoop && isNeibuAutoTurning) {
             startTurning();
         }
     }
@@ -398,18 +412,18 @@ public class BannerViewPager extends ViewPager {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (canLoop && isAutoTurning) {
+        if (canLoop && isNeibuAutoTurning) {
             stopTurning();
         }
     }
 
     /**
-     * 是否只有一条数据的时候禁用翻页
+     * 是否只有一条数据的时候禁用自动翻页
      *
      * @return
      */
     public boolean isOneDataOffLoopAndTurning() {
-        return isOneDataOffLoopAndTurning && getDatas() != null && getDatas().size() == 1;
+        return isOneDataOffLoopAndTurning && getDatas() != null && getDatas().size() <= 1;
     }
 
     /**
@@ -419,6 +433,16 @@ public class BannerViewPager extends ViewPager {
      */
     public void setOneDataOffLoopAndTurning(boolean oneDataOffLoopAndTurning) {
         this.isOneDataOffLoopAndTurning = oneDataOffLoopAndTurning;
+    }
+
+    /**
+     * 设置自动滚动
+     *
+     * @param isAutoTurning
+     */
+    public void setAutoTurning(boolean isAutoTurning) {
+        this.isAutoTurning = isAutoTurning;
+        startTurning();
     }
 
     /**
