@@ -60,9 +60,9 @@ public class NestViewPager extends ViewPager {
 
     private void initView(Context context, AttributeSet attrs) {
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BannerViewPager);
-        ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, 0);
-        orientation = a.getInt(R.styleable.BannerViewPager_banner_orientation, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NestViewPager);
+        ratio = a.getFloat(R.styleable.NestViewPager_nvp_ratio, 0);
+        orientation = a.getInt(R.styleable.NestViewPager_nvp_orientation, 0);
         a.recycle();
     }
 
