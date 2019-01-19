@@ -63,4 +63,13 @@
         <attr name="ind_no_select"></attr>
         <attr name="ind_select"></attr>
     </declare-styleable>
+    <declare-styleable name="NestViewPager">
+        <!--比例   默认16/9.0f-->
+        <attr name="nvp_ratio" format="reference|float"></attr>
+        <!--参考方向-->
+        <attr name="nvp_orientation">
+            <enum name="width" value="0" />
+            <enum name="height" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>

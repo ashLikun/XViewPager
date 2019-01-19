@@ -1,11 +1,14 @@
 package com.ashlikun.xviewpager.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+
+import com.ashlikun.xviewpager.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +38,16 @@ public class NestViewPager extends ViewPager {
     private boolean isCanSlide = true;
     private View refreshLayout;
     private int touchSlop;
+    /**
+     * 缩放比例
+     */
+    private float ratio = 0;
+    /**
+     * 按照那个值为基础
+     * 0:宽度
+     * 1：高度
+     */
+    private int orientation = 0;
 
     public NestViewPager(Context context) {
         this(context, null);
@@ -42,11 +55,35 @@ public class NestViewPager extends ViewPager {
 
     public NestViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initView();
+        initView(context, attrs);
     }
 
-    private void initView() {
+    private void initView(Context context, AttributeSet attrs) {
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BannerViewPager);
+        ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, 0);
+        orientation = a.getInt(R.styleable.BannerViewPager_banner_orientation, 0);
+        a.recycle();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        if (ratio > 0) {
+            if (orientation == 0) {
+                //宽度不变
+                heightSize = (int) (widthSize / ratio);
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize,
+                        MeasureSpec.EXACTLY);
+            } else {
+                //高度不变
+                widthSize = (int) (heightSize / ratio);
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize,
+                        MeasureSpec.EXACTLY);
+            }
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -133,5 +170,29 @@ public class NestViewPager extends ViewPager {
      */
     public void setRefreshLayout(View refreshLayout) {
         this.refreshLayout = refreshLayout;
+    }
+
+    /**
+     * 设置比例
+     *
+     * @param ratio
+     */
+    public void setRatio(float ratio) {
+        if (this.ratio != ratio) {
+            this.ratio = ratio;
+            requestLayout();
+        }
+    }
+
+    /**
+     * 设置方向
+     *
+     * @param orientation
+     */
+    public void setOrientation(int orientation) {
+        if (this.orientation != orientation) {
+            this.orientation = orientation;
+            requestLayout();
+        }
     }
 }
