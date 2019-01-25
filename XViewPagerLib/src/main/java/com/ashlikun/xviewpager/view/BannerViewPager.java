@@ -2,7 +2,6 @@ package com.ashlikun.xviewpager.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -25,7 +24,7 @@ import java.util.List;
  * 2:可以用作启动页
  */
 
-public class BannerViewPager extends ViewPager {
+public class BannerViewPager extends NestViewPager {
     //判断点击的最大移动距离
     private static final float SENS = 5;
     public static final long DEFAULT_TURNING_TIME = 5000;
@@ -48,16 +47,6 @@ public class BannerViewPager extends ViewPager {
     private boolean isOneDataOffLoopAndTurning = true;
     //是否可以自动滚动，内部用于判断触摸屏幕，与view进入焦点
     private boolean isNeibuAutoTurning = false;
-    /**
-     * 缩放比例
-     */
-    private float ratio = DEFAULT_RATIO;
-    /**
-     * 按照那个值为基础
-     * 0:宽度
-     * 1：高度
-     */
-    private int orientation = 0;
     private float downX = 0, downY = 0;
 
     private AdSwitchTask adSwitchTask;
@@ -77,7 +66,7 @@ public class BannerViewPager extends ViewPager {
         canLoop = a.getBoolean(R.styleable.BannerViewPager_banner_canLoop, canLoop);
         isOneDataOffLoopAndTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isOneDataOffLoopAndTurning, isOneDataOffLoopAndTurning);
         turningTime = a.getInteger(R.styleable.BannerViewPager_banner_turningTime, (int) turningTime);
-        ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, 0);
+        ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, DEFAULT_RATIO);
         orientation = a.getInt(R.styleable.BannerViewPager_banner_orientation, 0);
         isCanTouchScroll = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isCanTouchScroll);
         isAutoTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isAutoTurning);
@@ -121,6 +110,18 @@ public class BannerViewPager extends ViewPager {
                     downX = ev.getX();
                     downY = ev.getY();
                     break;
+                case MotionEvent.ACTION_MOVE:
+                    // 获取当前手指位置
+                    float endY = ev.getY();
+                    float endX = ev.getX();
+                    float distanceX = Math.abs(endX - downX);
+                    float distanceY = Math.abs(endY - downY);
+                    if (distanceX > 10 && distanceX > distanceY) {
+                        getParent().requestDisallowInterceptTouchEvent(true);
+                        requestDisallowInterceptTouchEvent(true);
+                    }
+                    break;
+                case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
                     if (Math.abs(downX - ev.getX()) < SENS
                             && Math.abs(downY - ev.getY()) < SENS) {
@@ -128,6 +129,8 @@ public class BannerViewPager extends ViewPager {
                             onItemClickListener.onItemClick(this, getDatas().get(getRealPosition()), getRealPosition());
                         }
                     }
+                    getParent().requestDisallowInterceptTouchEvent(false);
+                    requestDisallowInterceptTouchEvent(false);
                     break;
             }
         }
@@ -306,27 +309,6 @@ public class BannerViewPager extends ViewPager {
         this.onItemClickListener = onItemClickListener;
     }
 
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        if (ratio > 0) {
-            if (orientation == 0) {
-                //宽度不变
-                heightSize = (int) (widthSize / ratio);
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(heightSize,
-                        MeasureSpec.EXACTLY);
-            } else {
-                //高度不变
-                widthSize = (int) (heightSize / ratio);
-                widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthSize,
-                        MeasureSpec.EXACTLY);
-            }
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
     public void notifyDataSetChanged() {
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
@@ -471,30 +453,6 @@ public class BannerViewPager extends ViewPager {
                     bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime);
                 }
             }
-        }
-    }
-
-    /**
-     * 设置比例
-     *
-     * @param ratio
-     */
-    public void setRatio(float ratio) {
-        if (this.ratio != ratio) {
-            this.ratio = ratio;
-            requestLayout();
-        }
-    }
-
-    /**
-     * 设置方向
-     *
-     * @param orientation
-     */
-    public void setOrientation(int orientation) {
-        if (this.orientation != orientation) {
-            this.orientation = orientation;
-            requestLayout();
         }
     }
 }

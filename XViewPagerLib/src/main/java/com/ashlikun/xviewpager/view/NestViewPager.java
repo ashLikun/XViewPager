@@ -41,13 +41,13 @@ public class NestViewPager extends ViewPager {
     /**
      * 缩放比例
      */
-    private float ratio = 0;
+    protected float ratio = 0;
     /**
      * 按照那个值为基础
      * 0:宽度
      * 1：高度
      */
-    private int orientation = 0;
+    protected int orientation = 0;
 
     public NestViewPager(Context context) {
         this(context, null);
