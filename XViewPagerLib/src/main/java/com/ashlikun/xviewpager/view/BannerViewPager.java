@@ -86,6 +86,9 @@ public class BannerViewPager extends NestViewPager {
     }
 
     public int getFristItem() {
+        if (mAdapter == null) {
+            return 0;
+        }
         return canLoop ? mAdapter.getRealCount() : 0;
     }
 
@@ -298,7 +301,7 @@ public class BannerViewPager extends NestViewPager {
         isNeibuAutoTurning = true;
         this.turningTime = turningTime;
         turning = true;
-        if (!isOneDataOffLoopAndTurning()) {
+        if (getRealItemCount() > 0 && !isOneDataOffLoopAndTurning()) {
             postDelayed(adSwitchTask, turningTime);
         }
         return this;
