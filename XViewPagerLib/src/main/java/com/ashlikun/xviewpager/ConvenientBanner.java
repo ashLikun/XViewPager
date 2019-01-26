@@ -314,11 +314,6 @@ public class ConvenientBanner extends RelativeLayout {
         viewPager.setCanLoop(canLoop);
     }
 
-    public void setRatio(int ratio) {
-        viewPager.setRatio(ratio);
-    }
-
-
     public List getDatas() {
         return viewPager.getDatas();
     }

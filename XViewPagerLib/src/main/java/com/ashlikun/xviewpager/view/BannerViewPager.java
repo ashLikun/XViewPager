@@ -441,17 +441,13 @@ public class BannerViewPager extends NestViewPager {
         @Override
         public void run() {
             BannerViewPager bannerViewPager = reference.get();
-            if (bannerViewPager != null) {
-                if (bannerViewPager.turning) {
-                    int page = bannerViewPager.getCurrentItem() + 1;
-                    if (page >= bannerViewPager.getItemCount()) {
-                        page = 0;
-                    }
-                    if (page < bannerViewPager.getItemCount()) {
-                        bannerViewPager.setCurrentItem(page);
-                    }
-                    bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime);
+            if (bannerViewPager != null && bannerViewPager.turning) {
+                int page = bannerViewPager.getCurrentItem() + 1;
+                if (page >= bannerViewPager.getItemCount()) {
+                    page = bannerViewPager.getFristItem();
                 }
+                bannerViewPager.setCurrentItem(page);
+                bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime);
             }
         }
     }
