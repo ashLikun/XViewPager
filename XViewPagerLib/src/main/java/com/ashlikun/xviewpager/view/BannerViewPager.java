@@ -354,9 +354,6 @@ public class BannerViewPager extends NestViewPager {
         if (turning) {
             startTurning();
         }
-        if (datas.size() == 1) {
-
-        }
         return this;
     }
 
