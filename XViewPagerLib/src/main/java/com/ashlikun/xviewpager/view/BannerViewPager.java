@@ -149,7 +149,7 @@ public class BannerViewPager extends NestViewPager {
         if (isCanTouchScroll && !isOneDataOffLoopAndTurning()) {
             return super.onInterceptTouchEvent(ev);
         } else {
-            return false;
+            return onItemClickListener != null;
         }
     }
 
