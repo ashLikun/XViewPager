@@ -1,4 +1,4 @@
-package com.ogow.moduleguoji.view.activity.me;
+package com.ashlikun.xviewpager.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -10,9 +10,9 @@ import android.view.ViewGroup;
  * 创建时间: 2019/2/18　15:30
  * 邮箱　　：496546144@qq.com
  * <p>
- * 功能介绍：
+ * 功能介绍：解决kotlin使用setPrimaryItem, object 为null 的错误
  */
-public class MyAdapter extends PagerAdapter {
+public class XPagerAdapter extends PagerAdapter {
     @Override
     public int getCount() {
         return 0;
@@ -24,7 +24,18 @@ public class MyAdapter extends PagerAdapter {
     }
 
 
-    public void setPrimaryItem2(@NonNull ViewGroup container, int position, Object object) {
+    /**
+     * 请使用 setPrimaryItemNew
+     */
+    @Override
+    public final void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        super.setPrimaryItem(container, position, object);
+        if (object != null) {
+            setPrimaryItemNew(container, position, object);
+        }
+    }
+
+    public void setPrimaryItemNew(@NonNull ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
     }
 }
