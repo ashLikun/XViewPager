@@ -163,7 +163,13 @@ public class NestViewPager extends ViewPager {
                         break;
                 }
             }
-            return super.onTouchEvent(ev);
+            //可能发生  IllegalArgumentException: pointerIndex out of range报错字符串索引超出范围
+            try {
+                return super.onTouchEvent(ev);
+            } catch (IllegalArgumentException ex) {
+                ex.printStackTrace();
+            }
+            return false;
         }
     }
 
@@ -173,7 +179,13 @@ public class NestViewPager extends ViewPager {
         if (!isCanSlide) {
             return false;
         } else {
-            return super.onInterceptTouchEvent(ev);
+            //可能发生  IllegalArgumentException: pointerIndex out of range报错字符串索引超出范围
+            try {
+                return super.onInterceptTouchEvent(ev);
+            } catch (IllegalArgumentException ex) {
+                ex.printStackTrace();
+            }
+            return false;
         }
     }
 
