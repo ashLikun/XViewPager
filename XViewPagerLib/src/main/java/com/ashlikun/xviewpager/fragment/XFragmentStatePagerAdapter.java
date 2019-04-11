@@ -195,17 +195,19 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
             state = new Bundle();
             Fragment.SavedState[] fss = new Fragment.SavedState[mSavedState.size()];
             for (int i = 0; i < mSavedState.size(); i++) {
-                fss[i] = mSavedState.get(mSavedState.keyAt(i));
+                int position = mSavedState.keyAt(i);
+                fss[i] = mSavedState.get(position);
             }
             state.putParcelableArray("states", fss);
         }
         for (int i = 0; i < mCacheFragment.size(); i++) {
-            Fragment f = mCacheFragment.get(i);
+            int position = mCacheFragment.keyAt(i);
+            Fragment f = mCacheFragment.get(position);
             if (f != null && f.isAdded()) {
                 if (state == null) {
                     state = new Bundle();
                 }
-                String key = "f" + i;
+                String key = "f" + position;
                 mFragmentManager.putFragment(state, key, f);
             }
         }
@@ -228,11 +230,11 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
             Iterable<String> keys = bundle.keySet();
             for (String key : keys) {
                 if (key.startsWith("f")) {
-                    int index = Integer.parseInt(key.substring(1));
+                    int position = Integer.parseInt(key.substring(1));
                     Fragment f = mFragmentManager.getFragment(bundle, key);
                     if (f != null) {
                         f.setMenuVisibility(false);
-                        mCacheFragment.put(index, f);
+                        mCacheFragment.put(position, f);
                     } else {
                         Log.w(TAG, "Bad fragment at key " + key);
                     }
