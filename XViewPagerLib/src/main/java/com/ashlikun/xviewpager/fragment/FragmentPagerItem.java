@@ -15,6 +15,7 @@ import java.io.Serializable;
  * ViewPager的Fragment 适配器的item参数
  */
 public class FragmentPagerItem implements Serializable {
+    public static final String ID = "id";
     /**
      * 必须参数,路由路径
      */
@@ -54,6 +55,7 @@ public class FragmentPagerItem implements Serializable {
 
     public FragmentPagerItem setId(String id) {
         this.id = id;
+        addParam(ID, id);
         return this;
     }
 

@@ -1,6 +1,7 @@
 package com.ashlikun.xviewpager.simple;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.ashlikun.glideutils.GlideUtils;
 import com.ashlikun.xviewpager.ConvenientBanner;
 import com.ashlikun.xviewpager.indicator.TransIndicator;
@@ -49,15 +51,15 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
     }
 
     public void onClick(View view) {
-//        Intent intent = new Intent(this, Main2Activity.class);
-//        startActivity(intent);
-        if (bannerViewPager.getRealItemCount() == RESURL.length) {
-            bannerViewPager.setPages(new ArrayList(Arrays.asList(RESURL2)));
-            convenientBanner.setPages(new ArrayList(Arrays.asList(RESURL2)));
-        } else {
-            bannerViewPager.setPages(new ArrayList(Arrays.asList(RESURL)));
-            convenientBanner.setPages(new ArrayList(Arrays.asList(RESURL)));
-        }
+        Intent intent = new Intent(this, Main2Activity.class);
+        startActivity(intent);
+//        if (bannerViewPager.getRealItemCount() == RESURL.length) {
+//            bannerViewPager.setPages(new ArrayList(Arrays.asList(RESURL2)));
+//            convenientBanner.setPages(new ArrayList(Arrays.asList(RESURL2)));
+//        } else {
+//            bannerViewPager.setPages(new ArrayList(Arrays.asList(RESURL)));
+//            convenientBanner.setPages(new ArrayList(Arrays.asList(RESURL)));
+//        }
     }
 
     @Override

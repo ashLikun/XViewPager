@@ -4,10 +4,8 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.text.TextUtils;
-import android.util.SparseArray;
-import android.view.ViewGroup;
+import android.util.LruCache;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 
@@ -23,30 +21,48 @@ import java.util.List;
  * 可以设置缓存fragment，第一次会使用Arouter去发现Fragment，后续就会缓存起来
  */
 
-public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
-    /**
-     * 是否缓存Fragment
-     */
-    protected boolean isCache = false;
+public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
     /**
      * 传递给fragment的参数
      */
     public static final String POSITION = "fpa_POSITION";
-    /**
-     * 当前显示的Fragment
-     */
-    Fragment currentFragment;
 
-    private List<FragmentPagerItem> pagerItems;
+    protected List<FragmentPagerItem> pagerItems;
     /**
-     * 缓存时候的Fragment
+     * 是否缓存Fragment,方便获取
      */
-    private SparseArray<Fragment> chcheFragment;
+    protected boolean isCache;
+    /**
+     * 最大缓存个数
+     */
+    protected int maxCache;
 
     private FragmentPagerAdapter(Builder builder) {
         super(builder.fm);
         this.pagerItems = builder.items;
         this.isCache = builder.isCache;
+        this.maxCache = builder.maxCache;
+    }
+
+    @Override
+    public void initCheckCache() {
+        if (mCacheFragment == null) {
+            mCacheFragment = new LruCache<Integer, Fragment>(maxCache) {
+                @Override
+                protected void entryRemoved(boolean evicted, Integer key, Fragment oldValue, Fragment newValue) {
+                    super.entryRemoved(evicted, key, oldValue, newValue);
+                    //当缓存移除的时候
+                    if (isCache && evicted) {
+                        removeCache(key, oldValue, true);
+                    }
+                }
+            };
+        }
+    }
+
+    @Override
+    protected boolean isUserCache() {
+        return isCache;
     }
 
     public List<FragmentPagerItem> getPagerItems() {
@@ -63,17 +79,14 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return pagerItems.get(position).title;
     }
 
+
     @Override
     public Fragment getItem(int position) {
 
         Fragment fragment = null;
         if (isCache) {
-            if (chcheFragment == null) {
-                chcheFragment = new SparseArray<>();
-            }
-            if (chcheFragment.get(position) != null) {
-                fragment = chcheFragment.get(position);
-            }
+            initCheckCache();
+            fragment = getCacheFragment(position);
         }
         if (fragment == null) {
             FragmentPagerItem item = pagerItems.get(position);
@@ -83,9 +96,6 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
                     .build(item.path)
                     .with(item.param)
                     .navigation();
-            if (isCache) {
-                chcheFragment.append(position, fragment);
-            }
         }
         return fragment;
     }
@@ -103,7 +113,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
                     return i;
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return -1;
@@ -119,46 +129,25 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return null;
     }
 
-    @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        super.setPrimaryItem(container, position, object);
-        if (object != null && object instanceof Fragment) {
-            currentFragment = (Fragment) object;
-        } else {
-            currentFragment = null;
-        }
-    }
-
     public <T extends Fragment> T getCurrentFragment() {
-        if (currentFragment == null) {
+        if (mCurrentPrimaryItem == null) {
             return null;
         }
-        return (T) currentFragment;
+        return (T) mCurrentPrimaryItem;
     }
 
-
-    /**
-     * 获取缓存的fragment
-     * 前提是开启缓存
-     *
-     * @param position
-     * @return
-     */
-    public Fragment getCacheFragment(int position) {
-        return chcheFragment.get(position);
+    public FragmentManager getFragmentManager() {
+        return mFragmentManager;
     }
 
     /**
-     * @author　　: 李坤
-     * 创建时间: 2018/6/15 0015 下午 2:01
-     * 邮箱　　：496546144@qq.com
-     * <p>
-     * 功能介绍：构建者
+     * 构建者
      */
     public static class Builder {
         FragmentManager fm;
         List<FragmentPagerItem> items = new ArrayList<>();
         boolean isCache = false;
+        int maxCache = MAX_CACHE;
 
         private Builder(FragmentManager fm) {
             this.fm = fm;
@@ -191,6 +180,15 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         public Builder setCache(boolean cache) {
             isCache = cache;
             return this;
+        }
+
+        /**
+         * 缓存的最大数量
+         * 如果要与ViewPager一样，那么就不要设置，内部默认会缓存
+         */
+        public Builder setMaxCache(int maxCache) {
+            this.maxCache = maxCache;
+            return setCache(true);
         }
 
         public FragmentPagerAdapter build() {

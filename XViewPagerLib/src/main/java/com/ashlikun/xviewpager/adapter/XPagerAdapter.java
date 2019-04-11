@@ -23,19 +23,9 @@ public class XPagerAdapter extends PagerAdapter {
         return false;
     }
 
-
-    /**
-     * 请使用 setPrimaryItemNew
-     */
     @Override
-    public final void setPrimaryItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+    public final void setPrimaryItem(@NonNull ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
-        if (object != null) {
-            setPrimaryItemNew(container, position, object);
-        }
     }
 
-    public void setPrimaryItemNew(@NonNull ViewGroup container, int position, Object object) {
-        super.setPrimaryItem(container, position, object);
-    }
 }

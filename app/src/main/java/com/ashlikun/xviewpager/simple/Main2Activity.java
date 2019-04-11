@@ -3,6 +3,11 @@ package com.ashlikun.xviewpager.simple;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+
+import com.ashlikun.xviewpager.FragmentUtils;
+import com.ashlikun.xviewpager.fragment.FragmentLayout;
+import com.ashlikun.xviewpager.fragment.FragmentPagerAdapter;
 
 /**
  * 作者　　: 李坤
@@ -13,11 +18,39 @@ import android.support.v7.app.AppCompatActivity;
  */
 public class Main2Activity extends AppCompatActivity {
 
+    FragmentLayout fragmentLayout = null;
+    FragmentPagerAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        fragmentLayout = findViewById(R.id.fragmentLayout);
+        FragmentUtils.removeAll(getSupportFragmentManager());
+        adapter = FragmentPagerAdapter.Builder.get(getSupportFragmentManager())
+                .addItem("/Fragment/test").setId("1").ok()
+                .addItem("/Fragment/test").setId("2").ok()
+                .addItem("/Fragment/test").setId("3").ok()
+                .addItem("/Fragment/test").setId("4").ok()
+                .setMaxCache(3)
+                .build();
+        fragmentLayout.setAdapter(adapter);
+    }
 
+
+    public void onClick1(View view) {
+        fragmentLayout.setCurrentItem(0);
+    }
+
+    public void onClick2(View view) {
+        fragmentLayout.setCurrentItem(1);
+    }
+
+    public void onClick3(View view) {
+        fragmentLayout.setCurrentItem(2);
+    }
+
+    public void onClick4(View view) {
+        fragmentLayout.setCurrentItem(3);
     }
 }
