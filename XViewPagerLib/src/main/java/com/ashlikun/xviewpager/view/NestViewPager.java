@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.ashlikun.xviewpager.R;
+import com.ashlikun.xviewpager.anim.VerticalTransformer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,21 +33,15 @@ public class NestViewPager extends ViewPager {
     private static final String GAODE_MAP2 = "com.amap.api.maps.TextureMapView";
     private float startX, startY;
     private ArrayList<Class> classes;
-    /**
-     * ViewPager是否可以滑动
-     */
+    //ViewPager是否可以滑动
     private boolean isCanSlide = true;
     private View refreshLayout;
     private int touchSlop;
-    /**
-     * 缩放比例
-     */
+    //滑动模式
+    private ScrollMode scrollMode;
+    //缩放比例
     protected float ratio = 0;
-    /**
-     * 按照那个值为基础
-     * 0:宽度
-     * 1：高度
-     */
+    //按照那个值为基础 0:宽度 1：高度
     protected int orientation = 0;
 
     public NestViewPager(Context context) {
@@ -85,6 +80,7 @@ public class NestViewPager extends ViewPager {
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
 
     @Override
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
@@ -165,6 +161,9 @@ public class NestViewPager extends ViewPager {
             }
             //可能发生  IllegalArgumentException: pointerIndex out of range报错字符串索引超出范围
             try {
+                if (scrollMode == ScrollMode.VERTICAL) {
+                    return super.onTouchEvent(swapTouchEvent(ev));
+                }
                 return super.onTouchEvent(ev);
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
@@ -181,12 +180,32 @@ public class NestViewPager extends ViewPager {
         } else {
             //可能发生  IllegalArgumentException: pointerIndex out of range报错字符串索引超出范围
             try {
+                if (scrollMode == ScrollMode.VERTICAL) {
+                    boolean intercept = super.onInterceptTouchEvent(swapTouchEvent(ev));
+                    swapTouchEvent(ev);
+                    return intercept;
+                }
                 return super.onInterceptTouchEvent(ev);
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
             }
             return false;
         }
+    }
+
+    /**
+     * 交换触摸事件
+     *
+     * @param event
+     * @return
+     */
+    private MotionEvent swapTouchEvent(MotionEvent event) {
+        float width = getWidth();
+        float height = getHeight();
+        float swappedX = (event.getY() / height) * width;
+        float swappedY = (event.getX() / width) * height;
+        event.setLocation(swappedX, swappedY);
+        return event;
     }
 
     /**
@@ -199,6 +218,26 @@ public class NestViewPager extends ViewPager {
             classes = new ArrayList<>();
         }
         classes.addAll(Arrays.asList(cls));
+    }
+
+    /**
+     * 设置滚动类型
+     *
+     * @param scrollMode
+     */
+    public void setScrollMode(ScrollMode scrollMode) {
+        this.scrollMode = scrollMode;
+        if (scrollMode == ScrollMode.VERTICAL) {
+            setPageTransformer(false, new VerticalTransformer());
+            setOverScrollMode(OVER_SCROLL_NEVER);
+        } else {
+            setPageTransformer(false, null);
+            setOverScrollMode(OVER_SCROLL_ALWAYS);
+        }
+    }
+
+    public ScrollMode getScrollMode() {
+        return scrollMode;
     }
 
     /**
@@ -242,4 +281,6 @@ public class NestViewPager extends ViewPager {
             requestLayout();
         }
     }
+
+
 }

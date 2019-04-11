@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.ashlikun.xviewpager.fragment.FragmentPagerItem;
@@ -52,6 +53,8 @@ public class TestFragment extends Fragment {
         super.onViewCreated(rootView, savedInstanceState);
         Log.e("onViewCreated", "id == " + id);
         view = rootView.findViewById(R.id.view);
+        TextView textView = rootView.findViewById(R.id.textView);
+        textView.setText("我是第" + id + "个");
         switch (id) {
             case "1":
                 view.setBackgroundColor(0xffff0000);
@@ -64,6 +67,15 @@ public class TestFragment extends Fragment {
                 break;
             case "4":
                 view.setBackgroundColor(0xffff0fff);
+                break;
+            case "5":
+                view.setBackgroundColor(0xff665588);
+                break;
+            case "6":
+                view.setBackgroundColor(0xff778822);
+                break;
+            case "7":
+                view.setBackgroundColor(0xff334499);
                 break;
         }
     }

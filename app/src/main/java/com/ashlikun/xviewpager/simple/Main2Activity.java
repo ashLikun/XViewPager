@@ -32,8 +32,13 @@ public class Main2Activity extends AppCompatActivity {
                 .addItem("/Fragment/test").setId("2").ok()
                 .addItem("/Fragment/test").setId("3").ok()
                 .addItem("/Fragment/test").setId("4").ok()
-                .setMaxCache(3)
+                .addItem("/Fragment/test").setId("5").ok()
+                .addItem("/Fragment/test").setId("6").ok()
+                .addItem("/Fragment/test").setId("7").ok()
+                .setMaxCache(4)
                 .build();
+//        fragmentLayout.setScrollMode(ScrollMode.VERTICAL);
+//        fragmentLayout.setScrollMode(ScrollMode.HORIZONTAL);
         fragmentLayout.setAdapter(adapter);
     }
 
@@ -52,5 +57,17 @@ public class Main2Activity extends AppCompatActivity {
 
     public void onClick4(View view) {
         fragmentLayout.setCurrentItem(3);
+    }
+
+    public void onClick5(View view) {
+        fragmentLayout.setCurrentItem(4);
+    }
+
+    public void onClick6(View view) {
+        fragmentLayout.setCurrentItem(5);
+    }
+
+    public void onClick7(View view) {
+        fragmentLayout.setCurrentItem(6);
     }
 }

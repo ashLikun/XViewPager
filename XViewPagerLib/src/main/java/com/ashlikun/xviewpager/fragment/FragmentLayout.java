@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
+import android.util.LruCache;
 import android.widget.FrameLayout;
 
 /**
@@ -21,6 +22,7 @@ import android.widget.FrameLayout;
 public class FragmentLayout extends FrameLayout {
     FragmentPagerAdapter adapter;
     int currentPosition = 0;
+    LruCache<Integer, Integer> lruCache;
 
     public FragmentLayout(@NonNull Context context) {
         this(context, null);
@@ -48,7 +50,7 @@ public class FragmentLayout extends FrameLayout {
      *
      * @param adapter
      */
-    public void setAdapter(FragmentPagerAdapter adapter) {
+    public void setAdapter(final FragmentPagerAdapter adapter) {
         //清空已有的
         if (this.adapter != null) {
             for (int i = 0; i < getItemCount(); i++) {
@@ -62,6 +64,19 @@ public class FragmentLayout extends FrameLayout {
         //必须使用缓存
         adapter.isCache = true;
         this.adapter = adapter;
+        lruCache = new LruCache<Integer, Integer>(adapter.maxCache) {
+            @Override
+            protected void entryRemoved(boolean evicted, Integer key, Integer oldValue, Integer newValue) {
+                super.entryRemoved(evicted, key, oldValue, newValue);
+                if (evicted) {
+                    Fragment ff = adapter.getCacheFragment(key);
+                    if (ff != null) {
+                        adapter.destroyItem(FragmentLayout.this, key, ff);
+                        adapter.finishUpdate(FragmentLayout.this);
+                    }
+                }
+            }
+        };
         showFragment(currentPosition);
 
     }
@@ -76,7 +91,7 @@ public class FragmentLayout extends FrameLayout {
         FragmentTransaction ft = adapter.getFragmentManager().beginTransaction();
         //隐藏其他的
         for (int i = 0; i < getItemCount(); i++) {
-            Fragment cacheFragment = adapter.getCacheFragment(i);
+            Fragment cacheFragment = adapter.getCacheFragment(adapter.mCacheFragment.keyAt(i));
             if (cacheFragment != null) {
                 ft.hide(cacheFragment);
             }
@@ -94,6 +109,7 @@ public class FragmentLayout extends FrameLayout {
             adapter.setPrimaryItem(this, position, f);
             adapter.finishUpdate(this);
         }
+        lruCache.put(position, position);
     }
 
     /**

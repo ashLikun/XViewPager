@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.util.LruCache;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 
@@ -45,18 +44,12 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
     }
 
     @Override
-    public void initCheckCache() {
-        if (mCacheFragment == null) {
-            mCacheFragment = new LruCache<Integer, Fragment>(maxCache) {
-                @Override
-                protected void entryRemoved(boolean evicted, Integer key, Fragment oldValue, Fragment newValue) {
-                    super.entryRemoved(evicted, key, oldValue, newValue);
-                    //当缓存移除的时候
-                    if (isCache && evicted) {
-                        removeCache(key, oldValue, true);
-                    }
-                }
-            };
+    protected void checkCacheMax(int position, Fragment fragment) {
+        super.checkCacheMax(position, fragment);
+        if (getCacheSize() > maxCache) {
+            //超过最大值，删除老的，并且检查是否存在
+            //就是你了,删除了
+            removeCache(position, fragment);
         }
     }
 
@@ -85,7 +78,6 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
 
         Fragment fragment = null;
         if (isCache) {
-            initCheckCache();
             fragment = getCacheFragment(position);
         }
         if (fragment == null) {
@@ -185,6 +177,7 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
         /**
          * 缓存的最大数量
          * 如果要与ViewPager一样，那么就不要设置，内部默认会缓存
+         * ViewPager要使用缓存，一定要大于ViewPager本身缓存数量
          */
         public Builder setMaxCache(int maxCache) {
             this.maxCache = maxCache;

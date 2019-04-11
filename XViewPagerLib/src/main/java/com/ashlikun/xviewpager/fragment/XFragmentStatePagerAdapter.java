@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
-import android.util.LruCache;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,26 +58,19 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
     /**
      * 缓存时候的Fragment
      */
-    protected LruCache<Integer, Fragment> mCacheFragment;
+    protected SparseArray<Fragment> mCacheFragment = new SparseArray<Fragment>();
     /**
      * 默认的最大缓存
      */
     public static final int MAX_CACHE = Integer.MAX_VALUE;
 
     protected Fragment mCurrentPrimaryItem = null;
+    protected int mCurrentPrimaryPosition = -1;
 
     public XFragmentStatePagerAdapter(FragmentManager fm) {
         mFragmentManager = fm;
     }
 
-    /**
-     * 检查缓存
-     */
-    public void initCheckCache() {
-        if (mCacheFragment == null) {
-            mCacheFragment = new LruCache<Integer, Fragment>(MAX_CACHE);
-        }
-    }
 
     public abstract Fragment getItem(int position);
 
@@ -92,7 +84,6 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        initCheckCache();
         Fragment f = mCacheFragment.get(position);
         if (f != null) {
             return f;
@@ -115,16 +106,25 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
         return fragment;
     }
 
+    /**
+     * 检查缓存是否超过最大值
+     *
+     * @param position 应该删除的 Position
+     * @param fragment 应该删除的 fragment
+     */
+    protected void checkCacheMax(int position, Fragment fragment) {
+
+    }
+
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        initCheckCache();
         Fragment fragment = (Fragment) object;
-        if (mCurTransaction == null) {
-            mCurTransaction = mFragmentManager.beginTransaction();
-        }
         //如果不使用缓存才销毁
         if (!isUserCache()) {
-            removeCache(position, fragment, false);
+            removeCache(position, fragment);
+        } else {
+            //使用缓存
+            checkCacheMax(position, fragment);
         }
     }
 
@@ -133,7 +133,7 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
      *
      * @param position
      */
-    public void removeCache(int position, Fragment fragment, boolean isCommit) {
+    public void removeCache(int position, Fragment fragment) {
         if (fragment != null) {
 
             mSavedState.put(position, fragment.isAdded()
@@ -143,10 +143,7 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
                 mCurTransaction = mFragmentManager.beginTransaction();
             }
             mCurTransaction.remove(fragment);
-            if (isCommit) {
-                mCurTransaction.commitNowAllowingStateLoss();
-                mCurTransaction = null;
-            }
+
         }
     }
 
@@ -174,6 +171,7 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
                 fragment.setUserVisibleHint(true);
             }
             mCurrentPrimaryItem = fragment;
+            mCurrentPrimaryPosition = position;
         }
     }
 
@@ -197,11 +195,10 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
             state = new Bundle();
             Fragment.SavedState[] fss = new Fragment.SavedState[mSavedState.size()];
             for (int i = 0; i < mSavedState.size(); i++) {
-                fss[i] = mSavedState.get(i);
+                fss[i] = mSavedState.get(mSavedState.keyAt(i));
             }
             state.putParcelableArray("states", fss);
         }
-        initCheckCache();
         for (int i = 0; i < mCacheFragment.size(); i++) {
             Fragment f = mCacheFragment.get(i);
             if (f != null && f.isAdded()) {
@@ -222,8 +219,7 @@ public abstract class XFragmentStatePagerAdapter extends PagerAdapter {
             bundle.setClassLoader(loader);
             Parcelable[] fss = bundle.getParcelableArray("states");
             mSavedState.clear();
-            mCacheFragment = null;
-            initCheckCache();
+            mCacheFragment.clear();
             if (fss != null) {
                 for (int i = 0; i < fss.length; i++) {
                     mSavedState.put(i, (Fragment.SavedState) fss[i]);
