@@ -38,7 +38,7 @@ public class NestViewPager extends ViewPager {
     private View refreshLayout;
     private int touchSlop;
     //滑动模式
-    private ScrollMode scrollMode;
+    private ScrollMode scrollMode = ScrollMode.HORIZONTAL;
     //缩放比例
     protected float ratio = 0;
     //按照那个值为基础 0:宽度 1：高度
@@ -58,6 +58,7 @@ public class NestViewPager extends ViewPager {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NestViewPager);
         ratio = a.getFloat(R.styleable.NestViewPager_nvp_ratio, 0);
         orientation = a.getInt(R.styleable.NestViewPager_nvp_orientation, 0);
+        setScrollMode(ScrollMode.getScrollMode(a.getInt(R.styleable.NestViewPager_nvp_scrollMode, scrollMode.id)));
         a.recycle();
     }
 
@@ -226,11 +227,12 @@ public class NestViewPager extends ViewPager {
      * @param scrollMode
      */
     public void setScrollMode(ScrollMode scrollMode) {
+        ScrollMode oldMode = this.scrollMode;
         this.scrollMode = scrollMode;
         if (scrollMode == ScrollMode.VERTICAL) {
             setPageTransformer(false, new VerticalTransformer());
             setOverScrollMode(OVER_SCROLL_NEVER);
-        } else {
+        } else if (oldMode == ScrollMode.VERTICAL) {
             setPageTransformer(false, null);
             setOverScrollMode(OVER_SCROLL_ALWAYS);
         }

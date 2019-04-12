@@ -17,8 +17,9 @@ public enum ScrollMode {
 
     static ScrollMode getScrollMode(int id) {
         for (ScrollMode scrollMode : values()) {
-            if (scrollMode.id == id)
+            if (scrollMode.id == id) {
                 return scrollMode;
+            }
         }
         throw new IllegalArgumentException();
     }
