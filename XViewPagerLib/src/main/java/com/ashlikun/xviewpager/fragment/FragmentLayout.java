@@ -20,9 +20,9 @@ import android.widget.FrameLayout;
  * 必须依赖 {@link FragmentPagerAdapter}
  */
 public class FragmentLayout extends FrameLayout {
-  private   FragmentPagerAdapter mAdapter;
+    private FragmentPagerAdapter mAdapter;
     private int currentPosition = 0;
-    private  LruCache<Integer, Integer> lruCache;
+    private LruCache<Integer, Integer> lruCache;
 
     public FragmentLayout(@NonNull Context context) {
         this(context, null);
@@ -43,6 +43,10 @@ public class FragmentLayout extends FrameLayout {
 
     public int getItemCount() {
         return mAdapter != null ? mAdapter.getCacheSize() : 0;
+    }
+
+    public FragmentPagerAdapter getAdapter() {
+        return mAdapter;
     }
 
     /**
@@ -138,7 +142,7 @@ public class FragmentLayout extends FrameLayout {
         }
     }
 
-    public int getCurrentPosition() {
+    public int getCurrentItem() {
         return currentPosition;
     }
 }
