@@ -24,7 +24,7 @@ public class XPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public final void setPrimaryItem(@NonNull ViewGroup container, int position, Object object) {
+    public void setPrimaryItem(@NonNull ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
     }
 
