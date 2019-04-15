@@ -28,19 +28,17 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
 
     protected List<FragmentPagerItem> pagerItems;
     /**
-     * 是否缓存Fragment,方便获取
+     * 是否缓存Fragment,ViewPager不要使用缓存
      */
     protected boolean isCache;
     /**
-     * 最大缓存个数
+     * 最大缓存个数,ViewPager不要使用缓存
      */
-    protected int maxCache;
+    protected int maxCache = MAX_CACHE;
 
     private FragmentPagerAdapter(Builder builder) {
         super(builder.fm);
         this.pagerItems = builder.items;
-        this.isCache = builder.isCache;
-        this.maxCache = builder.maxCache;
     }
 
     @Override
@@ -53,10 +51,6 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
         }
     }
 
-    @Override
-    protected boolean isUserCache() {
-        return isCache;
-    }
 
     public List<FragmentPagerItem> getPagerItems() {
         return pagerItems;
@@ -138,8 +132,6 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
     public static class Builder {
         FragmentManager fm;
         List<FragmentPagerItem> items = new ArrayList<>();
-        boolean isCache = false;
-        int maxCache = MAX_CACHE;
 
         private Builder(FragmentManager fm) {
             this.fm = fm;
@@ -164,24 +156,6 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
             item.builder = this;
             items.add(item);
             return item;
-        }
-
-        /**
-         * 是否缓存Fragment
-         */
-        public Builder setCache(boolean cache) {
-            isCache = cache;
-            return this;
-        }
-
-        /**
-         * 缓存的最大数量
-         * 如果要与ViewPager一样，那么就不要设置，内部默认会缓存
-         * ViewPager要使用缓存，一定要大于ViewPager本身缓存数量
-         */
-        public Builder setMaxCache(int maxCache) {
-            this.maxCache = maxCache;
-            return setCache(true);
         }
 
         public FragmentPagerAdapter build() {

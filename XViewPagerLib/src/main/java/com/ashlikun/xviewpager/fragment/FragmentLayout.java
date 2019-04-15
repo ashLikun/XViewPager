@@ -1,6 +1,7 @@
 package com.ashlikun.xviewpager.fragment;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
 import android.util.LruCache;
 import android.widget.FrameLayout;
+
+import com.ashlikun.xviewpager.R;
 
 /**
  * 作者　　: 李坤
@@ -23,6 +26,10 @@ public class FragmentLayout extends FrameLayout {
     private FragmentPagerAdapter mAdapter;
     private int currentPosition = 0;
     private LruCache<Integer, Integer> lruCache;
+    /**
+     * 最大缓存个数
+     */
+    protected int maxCache = XFragmentStatePagerAdapter.MAX_CACHE;
 
     public FragmentLayout(@NonNull Context context) {
         this(context, null);
@@ -34,11 +41,13 @@ public class FragmentLayout extends FrameLayout {
 
     public FragmentLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initView();
+        initView(context, attrs);
     }
 
-    private void initView() {
-
+    private void initView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FragmentLayout);
+        setOffscreenPageLimit(a.getInt(R.styleable.FragmentLayout_fl_maxCache, maxCache));
+        a.recycle();
     }
 
     public int getItemCount() {
@@ -67,6 +76,7 @@ public class FragmentLayout extends FrameLayout {
         }
         //必须使用缓存
         adapter.isCache = true;
+        adapter.maxCache = maxCache;
         this.mAdapter = adapter;
         lruCache = new LruCache<Integer, Integer>(adapter.maxCache) {
             @Override
@@ -144,5 +154,21 @@ public class FragmentLayout extends FrameLayout {
 
     public int getCurrentItem() {
         return currentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
+    }
+
+    /**
+     * 最大缓存个数，在setAdapter之前设置
+     *
+     * @param limit
+     */
+    public void setOffscreenPageLimit(int limit) {
+        if (limit <= 0) {
+            limit = 1;
+        }
+        maxCache = limit;
     }
 }

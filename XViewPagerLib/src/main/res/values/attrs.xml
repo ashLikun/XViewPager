@@ -77,4 +77,7 @@
             <enum name="vertical" value="1" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="FragmentLayout">
+        <attr name="fl_maxCache" format="integer"></attr>
+    </declare-styleable>
 </resources>
