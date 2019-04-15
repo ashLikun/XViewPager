@@ -58,6 +58,7 @@ public class NestViewPager extends ViewPager {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NestViewPager);
         ratio = a.getFloat(R.styleable.NestViewPager_nvp_ratio, 0);
         orientation = a.getInt(R.styleable.NestViewPager_nvp_orientation, 0);
+        isCanSlide = a.getInt(R.styleable.NestViewPager_nvp_isCanSlide, isCanSlide);
         setScrollMode(ScrollMode.getScrollMode(a.getInt(R.styleable.NestViewPager_nvp_scrollMode, scrollMode.id)));
         a.recycle();
     }

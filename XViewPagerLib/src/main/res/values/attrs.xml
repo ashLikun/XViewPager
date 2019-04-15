@@ -76,6 +76,8 @@
             <enum name="horizontal" value="0" />
             <enum name="vertical" value="1" />
         </attr>
+        <!--ViewPager是否可以滑动-->
+        <attr name="nvp_isCanSlide" format="boolean"></attr>
     </declare-styleable>
     <declare-styleable name="FragmentLayout">
         <attr name="fl_maxCache" format="integer"></attr>
