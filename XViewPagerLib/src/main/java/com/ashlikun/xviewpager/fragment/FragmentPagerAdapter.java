@@ -76,12 +76,6 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
-        clearCache();
-    }
-
-    @Override
     public Fragment getItem(int position) {
         Fragment fragment = null;
         if (isCache) {
@@ -128,6 +122,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        super.setPrimaryItem(container, position, object);
         Fragment fragment = (Fragment) object;
         if (fragment != mCurrentPrimaryItem) {
             mCurrentPrimaryItem = fragment;
@@ -165,6 +160,15 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     public void clearCache() {
         if (isCache) {
             mCacheFragment.clear();
+        }
+    }
+
+    /**
+     * 清空缓存
+     */
+    public void removeCache(int position) {
+        if (isCache) {
+            mCacheFragment.remove(position);
         }
     }
 
