@@ -153,6 +153,15 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return (T) mCacheFragment.get(position);
     }
 
+    /**
+     * 清空缓存
+     */
+    public void clearCache() {
+        if (isCache) {
+            mCacheFragment.clear();
+        }
+    }
+
     public int getCacheSize() {
         return mCacheFragment != null ? mCacheFragment.size() : 0;
     }
