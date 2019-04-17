@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ashlikun.xviewpager.FragmentUtils;
-import com.ashlikun.xviewpager.fragment.FragmentLayout;
 import com.ashlikun.xviewpager.fragment.FragmentPagerAdapter;
+import com.ashlikun.xviewpager.view.NestViewPager;
 
 /**
  * 作者　　: 李坤
@@ -18,7 +18,7 @@ import com.ashlikun.xviewpager.fragment.FragmentPagerAdapter;
  */
 public class Main2Activity extends AppCompatActivity {
 
-    FragmentLayout fragmentLayout = null;
+    NestViewPager fragmentLayout = null;
     FragmentPagerAdapter adapter;
 
     @Override
@@ -35,8 +35,9 @@ public class Main2Activity extends AppCompatActivity {
                 .addItem("/Fragment/test").setId("5").ok()
                 .addItem("/Fragment/test").setId("6").ok()
                 .addItem("/Fragment/test").setId("7").ok()
+                .setCache(true)
                 .build();
-        fragmentLayout.setOffscreenPageLimit(4);
+//        fragmentLayout.setOffscreenPageLimit(4);
 //        fragmentLayout.setScrollMode(ScrollMode.VERTICAL);
 //        fragmentLayout.setScrollMode(ScrollMode.HORIZONTAL);
         fragmentLayout.setAdapter(adapter);

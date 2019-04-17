@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.AttributeSet;
 import android.util.LruCache;
+import android.util.SparseArray;
 import android.widget.FrameLayout;
 
 import com.ashlikun.xviewpager.R;
@@ -23,13 +24,17 @@ import com.ashlikun.xviewpager.R;
  * 必须依赖 {@link FragmentPagerAdapter}
  */
 public class FragmentLayout extends FrameLayout {
+    /**
+     * 缓存时候的Fragment
+     */
+    protected SparseArray<Fragment> mFragments = new SparseArray();
     private FragmentPagerAdapter mAdapter;
     private int currentPosition = 0;
     private LruCache<Integer, Integer> lruCache;
     /**
      * 最大缓存个数
      */
-    protected int maxCache = XFragmentStatePagerAdapter.MAX_CACHE;
+    protected int maxCache = Integer.MAX_VALUE;
 
     public FragmentLayout(@NonNull Context context) {
         this(context, null);
@@ -51,7 +56,7 @@ public class FragmentLayout extends FrameLayout {
     }
 
     public int getItemCount() {
-        return mAdapter != null ? mAdapter.getCacheSize() : 0;
+        return mFragments.size();
     }
 
     public FragmentPagerAdapter getAdapter() {
@@ -65,32 +70,31 @@ public class FragmentLayout extends FrameLayout {
      */
     public void setAdapter(final FragmentPagerAdapter adapter) {
         //清空已有的
-        if (this.mAdapter != null) {
+        if (mAdapter != null) {
             for (int i = 0; i < getItemCount(); i++) {
-                Fragment f = adapter.getCacheFragment(i);
+                Fragment f = geFragment(i);
                 if (f != null) {
-                    this.mAdapter.destroyItem(this, i, f);
-                    this.mAdapter.finishUpdate(this);
+                    adapter.destroyItem(FragmentLayout.this, i, f);
                 }
             }
+            adapter.finishUpdate(FragmentLayout.this);
+            mFragments.clear();
         }
-        //必须使用缓存
-        adapter.isCache = true;
-        adapter.maxCache = maxCache;
-        this.mAdapter = adapter;
-        lruCache = new LruCache<Integer, Integer>(adapter.maxCache) {
+        lruCache = new LruCache<Integer, Integer>(maxCache) {
             @Override
             protected void entryRemoved(boolean evicted, Integer key, Integer oldValue, Integer newValue) {
                 super.entryRemoved(evicted, key, oldValue, newValue);
                 if (evicted) {
-                    Fragment ff = adapter.getCacheFragment(key);
+                    Fragment ff = geFragment(key);
                     if (ff != null) {
                         adapter.destroyItem(FragmentLayout.this, key, ff);
                         adapter.finishUpdate(FragmentLayout.this);
+                        mFragments.remove(key);
                     }
                 }
             }
         };
+        this.mAdapter = adapter;
         showFragment(currentPosition);
 
     }
@@ -101,11 +105,11 @@ public class FragmentLayout extends FrameLayout {
      * @param position
      */
     private void showFragment(int position) {
-        Fragment f = mAdapter.getCacheFragment(position);
+        Fragment f = geFragment(position);
         FragmentTransaction ft = mAdapter.getFragmentManager().beginTransaction();
         //隐藏其他的
         for (int i = 0; i < getItemCount(); i++) {
-            Fragment cacheFragment = mAdapter.getCacheFragment(mAdapter.mCacheFragment.keyAt(i));
+            Fragment cacheFragment = geFragment(mFragments.keyAt(i));
             if (cacheFragment != null) {
                 ft.hide(cacheFragment);
             }
@@ -118,8 +122,8 @@ public class FragmentLayout extends FrameLayout {
             if (getItemCount() > 0) {
                 ft.commitNowAllowingStateLoss();
             }
-            mAdapter.instantiateItem(this, position);
-            f = mAdapter.getCacheFragment(position);
+            f = (Fragment) mAdapter.instantiateItem(this, position);
+            mFragments.put(position, f);
             mAdapter.setPrimaryItem(this, position, f);
             mAdapter.finishUpdate(this);
         }
@@ -132,10 +136,12 @@ public class FragmentLayout extends FrameLayout {
      * @param position
      */
     private void hindFragment(int position) {
-        Fragment f = mAdapter.getCacheFragment(position);
+        Fragment f = geFragment(position);
         if (f != null) {
             //已经添加了
-            f.setUserVisibleHint(false);
+            if (f.getUserVisibleHint()) {
+                f.setUserVisibleHint(false);
+            }
             mAdapter.getFragmentManager().beginTransaction().hide(f).commitNowAllowingStateLoss();
         }
     }
@@ -170,5 +176,16 @@ public class FragmentLayout extends FrameLayout {
             limit = 1;
         }
         maxCache = limit;
+    }
+
+    /**
+     * 获取缓存的fragment
+     * 前提是开启缓存
+     *
+     * @param position
+     * @return
+     */
+    public Fragment geFragment(int position) {
+        return mFragments.get(position);
     }
 }

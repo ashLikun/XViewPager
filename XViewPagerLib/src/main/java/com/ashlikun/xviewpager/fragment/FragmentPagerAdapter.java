@@ -1,10 +1,11 @@
 package com.ashlikun.xviewpager.fragment;
 
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * 可以设置缓存fragment，第一次会使用Arouter去发现Fragment，后续就会缓存起来
  */
 
-public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
+public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     /**
      * 传递给fragment的参数
      */
@@ -28,31 +29,29 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
 
     protected List<FragmentPagerItem> pagerItems;
     /**
-     * 是否缓存Fragment,ViewPager不要使用缓存
+     * 是否缓存Fragment
      */
-    protected boolean isCache;
+    private boolean isCache = false;
+    protected final FragmentManager fragmentManager;
     /**
-     * 最大缓存个数,ViewPager不要使用缓存
+     * 缓存时候的Fragment
      */
-    protected int maxCache = MAX_CACHE;
+    protected SparseArray<Fragment> mCacheFragment = null;
+
+    protected Fragment mCurrentPrimaryItem = null;
 
     private FragmentPagerAdapter(Builder builder) {
         super(builder.fm);
+        fragmentManager = builder.fm;
         this.pagerItems = builder.items;
-    }
-
-    @Override
-    protected void checkCacheMax(int position, Fragment fragment) {
-        super.checkCacheMax(position, fragment);
-        if (getCacheSize() > maxCache) {
-            //超过最大值，删除老的，并且检查是否存在
-            //就是你了,删除了
-            removeCache(position, fragment);
-        }
+        setCache(builder.isCache);
     }
 
 
     public List<FragmentPagerItem> getPagerItems() {
+        if (pagerItems == null) {
+            pagerItems = new ArrayList<>();
+        }
         return pagerItems;
     }
 
@@ -66,10 +65,17 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
         return pagerItems.get(position).title;
     }
 
+    public void setCache(boolean cache) {
+        isCache = cache;
+        if (isCache) {
+            mCacheFragment = new SparseArray<>();
+        } else {
+            mCacheFragment = null;
+        }
+    }
 
     @Override
     public Fragment getItem(int position) {
-
         Fragment fragment = null;
         if (isCache) {
             fragment = getCacheFragment(position);
@@ -110,11 +116,6 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
         return pagerItems == null || pagerItems.isEmpty() ? 0 : pagerItems.size();
     }
 
-    @Override
-    public Parcelable saveState() {
-        return null;
-    }
-
     public <T extends Fragment> T getCurrentFragment() {
         if (mCurrentPrimaryItem == null) {
             return null;
@@ -123,7 +124,25 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
     }
 
     public FragmentManager getFragmentManager() {
-        return mFragmentManager;
+        return fragmentManager;
+    }
+
+    /**
+     * 获取缓存的fragment
+     * 前提是开启缓存
+     *
+     * @param position
+     * @return
+     */
+    public <T extends Fragment> T getCacheFragment(int position) {
+        if (mCacheFragment == null) {
+            return null;
+        }
+        return (T) mCacheFragment.get(position);
+    }
+
+    public int getCacheSize() {
+        return mCacheFragment != null ? mCacheFragment.size() : 0;
     }
 
     /**
@@ -132,6 +151,7 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
     public static class Builder {
         FragmentManager fm;
         List<FragmentPagerItem> items = new ArrayList<>();
+        private boolean isCache;
 
         private Builder(FragmentManager fm) {
             this.fm = fm;
@@ -143,6 +163,11 @@ public class FragmentPagerAdapter extends XFragmentStatePagerAdapter {
 
         public Builder setItems(List<FragmentPagerItem> items) {
             this.items = items;
+            return this;
+        }
+
+        public Builder setCache(boolean isCache) {
+            this.isCache = isCache;
             return this;
         }
 
