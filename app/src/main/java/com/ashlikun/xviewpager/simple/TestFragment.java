@@ -25,6 +25,7 @@ import com.ashlikun.xviewpager.fragment.FragmentPagerItem;
 public class TestFragment extends Fragment {
     String id;
     View view;
+    boolean isCache = false;
 
     @Override
     public void onAttach(Context context) {
@@ -43,7 +44,8 @@ public class TestFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_test1, null);
-        Log.e("onCreateView", "id == " + id);
+        Log.e("onCreateView", "id == " + id + "    isCache = " + isCache);
+        isCache = true;
         return view;
     }
 

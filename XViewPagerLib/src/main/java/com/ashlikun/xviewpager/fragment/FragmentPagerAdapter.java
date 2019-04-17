@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.text.TextUtils;
 import android.util.SparseArray;
+import android.view.ViewGroup;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 
@@ -88,6 +89,9 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
                     .build(item.path)
                     .with(item.param)
                     .navigation();
+            if (isCache) {
+                mCacheFragment.put(position, fragment);
+            }
         }
         return fragment;
     }
@@ -114,6 +118,14 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return pagerItems == null || pagerItems.isEmpty() ? 0 : pagerItems.size();
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        Fragment fragment = (Fragment) object;
+        if (fragment != mCurrentPrimaryItem) {
+            mCurrentPrimaryItem = fragment;
+        }
     }
 
     public <T extends Fragment> T getCurrentFragment() {
