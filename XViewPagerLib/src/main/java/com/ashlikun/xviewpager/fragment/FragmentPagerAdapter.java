@@ -1,5 +1,6 @@
 package com.ashlikun.xviewpager.fragment;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +21,8 @@ import java.util.List;
  * <p>
  * 功能介绍：viewpager显示fragment的适配器,用路由模式去寻找fragment
  * 可以设置缓存fragment，第一次会使用Arouter去发现Fragment，后续就会缓存起来
+ * <p>
+ * 如果开启缓存，可能会被检测到Fragment内存泄漏
  */
 
 public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
@@ -37,7 +40,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     /**
      * 缓存时候的Fragment
      */
-    protected SparseArray<Fragment> mCacheFragment = null;
+    protected SparseArray<Fragment> mCacheFragment = new SparseArray<>();
 
     protected Fragment mCurrentPrimaryItem = null;
 
@@ -68,10 +71,21 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     public void setCache(boolean cache) {
         isCache = cache;
-        if (isCache) {
-            mCacheFragment = new SparseArray<>();
-        } else {
-            mCacheFragment = null;
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        mCacheFragment.put(position, fragment);
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, Object object) {
+        super.destroyItem(container, position, object);
+        if (!isCache) {
+            mCacheFragment.remove(position);
         }
     }
 
@@ -89,9 +103,6 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
                     .build(item.path)
                     .with(item.param)
                     .navigation();
-            if (isCache) {
-                mCacheFragment.put(position, fragment);
-            }
         }
         return fragment;
     }
