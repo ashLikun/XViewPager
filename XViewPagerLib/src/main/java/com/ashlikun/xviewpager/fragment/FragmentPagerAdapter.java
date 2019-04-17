@@ -76,6 +76,12 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        clearCache();
+    }
+
+    @Override
     public Fragment getItem(int position) {
         Fragment fragment = null;
         if (isCache) {
