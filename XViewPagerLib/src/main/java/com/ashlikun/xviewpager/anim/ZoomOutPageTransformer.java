@@ -1,8 +1,8 @@
 package com.ashlikun.xviewpager.anim;
 
 import android.annotation.SuppressLint;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.View;
 /**
  * @author　　: 李坤

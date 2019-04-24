@@ -1,6 +1,6 @@
 package com.ashlikun.xviewpager.listener;
 
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * 作者　　: 李坤
