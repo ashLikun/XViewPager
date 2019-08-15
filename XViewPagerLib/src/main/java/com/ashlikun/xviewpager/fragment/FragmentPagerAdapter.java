@@ -1,13 +1,15 @@
 package com.ashlikun.xviewpager.fragment;
 
+import android.os.Parcelable;
+import android.text.TextUtils;
+import android.util.SparseArray;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import android.text.TextUtils;
-import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 
@@ -185,6 +187,18 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     public int getCacheSize() {
         return mCacheFragment != null ? mCacheFragment.size() : 0;
+    }
+
+    @Override
+    public Parcelable saveState() {
+        //ViewPager又包裹了一层ViewPager，且外层的Adapter继承了FragmentPagerAdapter，但里层继承了FragmentStatePagerAdapter。
+        //Fragment no longer exists for key f0: index 0
+        try {
+            return super.saveState();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
