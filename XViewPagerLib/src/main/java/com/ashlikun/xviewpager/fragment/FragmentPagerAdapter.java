@@ -201,6 +201,17 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         return null;
     }
 
+    @Override
+    public void restoreState(Parcelable state, ClassLoader loader) {
+        //ViewPager又包裹了一层ViewPager，且外层的Adapter继承了FragmentPagerAdapter，但里层继承了FragmentStatePagerAdapter。
+        //Fragment no longer exists for key f0: index 0
+        try {
+            super.restoreState(state, loader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 构建者
      */
