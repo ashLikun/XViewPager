@@ -2,11 +2,16 @@ package com.ashlikun.xviewpager.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.viewpager.widget.ViewPager;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.anim.VerticalTransformer;
@@ -43,6 +48,16 @@ public class NestViewPager extends ViewPager {
     protected float ratio = 0;
     //按照那个值为基础 0:宽度 1：高度
     protected int orientation = 0;
+    //用于裁剪画布的路径
+    protected Path clipPath;
+    //圆角半径  左上
+    protected float radiusLeftTop = -1;
+    //圆角半径  右上
+    protected float radiusRightTop = -1;
+    //圆角半径  右下
+    protected float radiusRightBottom = -1;
+    //圆角半径  坐下
+    protected float radiusLeftBottom = -1;
 
     public NestViewPager(Context context) {
         this(context, null);
@@ -60,6 +75,22 @@ public class NestViewPager extends ViewPager {
         orientation = a.getInt(R.styleable.NestViewPager_nvp_orientation, 0);
         isCanSlide = a.getBoolean(R.styleable.NestViewPager_nvp_isCanSlide, isCanSlide);
         setScrollMode(ScrollMode.getScrollMode(a.getInt(R.styleable.NestViewPager_nvp_scrollMode, scrollMode.id)));
+        //圆角设置
+        if (a.hasValue(R.styleable.NestViewPager_nvp_radius)) {
+            radiusLeftTop = radiusRightTop = radiusRightBottom = radiusLeftBottom = a.getDimension(R.styleable.NestViewPager_nvp_radius, -1);
+        }
+        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusLeftTop)) {
+            radiusLeftTop = a.getDimension(R.styleable.NestViewPager_nvp_radiusLeftTop, radiusLeftTop);
+        }
+        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusRightTop)) {
+            radiusRightTop = a.getDimension(R.styleable.NestViewPager_nvp_radiusRightTop, radiusRightTop);
+        }
+        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusRightBottom)) {
+            radiusRightBottom = a.getDimension(R.styleable.NestViewPager_nvp_radiusRightBottom, radiusRightBottom);
+        }
+        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusLeftBottom)) {
+            radiusLeftBottom = a.getDimension(R.styleable.NestViewPager_nvp_radiusLeftBottom, radiusLeftBottom);
+        }
         a.recycle();
     }
 
@@ -195,6 +226,31 @@ public class NestViewPager extends ViewPager {
         }
     }
 
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+
+        if (radiusLeftTop != -1 || radiusRightTop != -1 || radiusRightBottom != -1 || radiusLeftBottom != -1) {
+            if (clipPath == null) {
+                clipPath = new Path();
+            }
+            clipPath.reset();
+            float[] radii = new float[]{radiusLeftTop, radiusLeftTop, radiusRightTop, radiusRightTop, radiusRightBottom, radiusRightBottom, radiusLeftBottom, radiusLeftBottom};
+
+            clipPath.addRoundRect(new RectF(0, 0, getWidth(), getHeight()), radii, Path.Direction.CW);
+            //viewPage内部是滚动实现，这里要加上偏移量
+            Matrix matrix = new Matrix();
+            matrix.setTranslate(getScrollX(), getScaleY());
+            clipPath.transform(matrix);
+
+            canvas.save();
+            canvas.clipPath(clipPath);
+            super.dispatchDraw(canvas);
+            canvas.restore();
+        } else {
+            super.dispatchDraw(canvas);
+        }
+    }
+
     /**
      * 交换触摸事件
      *
@@ -285,5 +341,57 @@ public class NestViewPager extends ViewPager {
         }
     }
 
+    /**
+     * 4个方向的圆角
+     */
+    public void setRadius(float radius) {
+        radiusLeftTop = radius;
+        radiusRightTop = radius;
+        radiusRightBottom = radius;
+        radiusLeftBottom = radius;
+        invalidate();
+    }
 
+    /**
+     * 4个方向的圆角
+     */
+    public void setRadius(float radiusLeftTop, float radiusRightTop, float radiusRightBottom, float radiusLeftBottom) {
+        this.radiusLeftTop = radiusLeftTop;
+        this.radiusRightTop = radiusRightTop;
+        this.radiusRightBottom = radiusRightBottom;
+        this.radiusLeftBottom = radiusLeftBottom;
+        invalidate();
+    }
+
+    /**
+     * 左上的圆角
+     */
+    public void setRadiusLeftTop(float radiusLeftTop) {
+        this.radiusLeftTop = radiusLeftTop;
+        invalidate();
+    }
+
+    /**
+     * 右上的圆角
+     */
+    public void setRadiusRightTop(float radiusRightTop) {
+        this.radiusRightTop = radiusRightTop;
+        invalidate();
+    }
+
+    /**
+     * 右下的圆角
+     */
+    public void setRadiusRightBottom(float radiusRightBottom) {
+        this.radiusRightBottom = radiusRightBottom;
+        invalidate();
+    }
+
+    /**
+     * 坐下的圆角
+     */
+    public void setRadiusLeftBottom(float radiusLeftBottom) {
+        this.radiusLeftBottom = radiusLeftBottom;
+        invalidate();
+    }
 }

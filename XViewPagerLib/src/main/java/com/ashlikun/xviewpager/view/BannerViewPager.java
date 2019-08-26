@@ -66,8 +66,6 @@ public class BannerViewPager extends NestViewPager {
         canLoop = a.getBoolean(R.styleable.BannerViewPager_banner_canLoop, canLoop);
         isOneDataOffLoopAndTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isOneDataOffLoopAndTurning, isOneDataOffLoopAndTurning);
         turningTime = a.getInteger(R.styleable.BannerViewPager_banner_turningTime, (int) turningTime);
-        ratio = a.getFloat(R.styleable.BannerViewPager_banner_ratio, DEFAULT_RATIO);
-        orientation = a.getInt(R.styleable.BannerViewPager_banner_orientation, 0);
         isCanTouchScroll = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isCanTouchScroll);
         isAutoTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isAutoTurning);
         a.recycle();

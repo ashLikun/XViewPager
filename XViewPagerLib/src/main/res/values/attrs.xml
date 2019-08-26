@@ -20,6 +20,12 @@
     <attr name="ind_select" format="reference" />
     <!--比例   默认16/9.0f-->
     <attr name="banner_ratio" format="reference|float"></attr>
+    <!--圆角半径-->
+    <attr name="banner_radius" format="reference|dimension"></attr>
+    <attr name="banner_radiusLeftTop" format="reference|dimension"></attr>
+    <attr name="banner_radiusRightTop" format="reference|dimension"></attr>
+    <attr name="banner_radiusRightBottom" format="reference|dimension"></attr>
+    <attr name="banner_radiusLeftBottom" format="reference|dimension"></attr>
     <!--参考方向-->
     <attr name="banner_orientation">
         <enum name="width" value="0" />
@@ -42,6 +48,16 @@
         <attr name="banner_canLoop"></attr>
         <attr name="banner_turningTime"></attr>
         <attr name="banner_ratio"></attr>
+        <!--圆角半径-->
+        <attr name="banner_radius"></attr>
+        <!--圆角半径-->
+        <attr name="banner_radiusLeftTop"></attr>
+        <!--圆角半径-->
+        <attr name="banner_radiusRightTop"></attr>
+        <!--圆角半径-->
+        <attr name="banner_radiusRightBottom"></attr>
+        <!--圆角半径-->
+        <attr name="banner_radiusLeftBottom"></attr>
         <attr name="banner_orientation"></attr>
         <attr name="banner_isCanTouchScroll"></attr>
         <attr name="banner_isOneDataOffLoopAndTurning"></attr>
@@ -51,8 +67,6 @@
     <declare-styleable name="BannerViewPager">
         <attr name="banner_canLoop"></attr>
         <attr name="banner_turningTime"></attr>
-        <attr name="banner_ratio"></attr>
-        <attr name="banner_orientation"></attr>
         <attr name="banner_isCanTouchScroll"></attr>
         <attr name="banner_isOneDataOffLoopAndTurning"></attr>
         <attr name="banner_isAutoTurning"></attr>
@@ -78,6 +92,12 @@
         </attr>
         <!--ViewPager是否可以滑动-->
         <attr name="nvp_isCanSlide" format="boolean"></attr>
+        <!--圆角半径-->
+        <attr name="nvp_radius" format="reference|dimension"></attr>
+        <attr name="nvp_radiusLeftTop" format="reference|dimension"></attr>
+        <attr name="nvp_radiusRightTop" format="reference|dimension"></attr>
+        <attr name="nvp_radiusRightBottom" format="reference|dimension"></attr>
+        <attr name="nvp_radiusLeftBottom" format="reference|dimension"></attr>
     </declare-styleable>
     <declare-styleable name="FragmentLayout">
         <attr name="fl_maxCache" format="integer"></attr>
