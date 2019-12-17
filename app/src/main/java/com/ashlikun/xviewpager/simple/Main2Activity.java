@@ -1,9 +1,10 @@
 package com.ashlikun.xviewpager.simple;
 
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
 
 import com.ashlikun.xviewpager.FragmentUtils;
 import com.ashlikun.xviewpager.fragment.FragmentPagerAdapter;
@@ -27,7 +28,7 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         fragmentLayout = findViewById(R.id.fragmentLayout);
         FragmentUtils.removeAll(getSupportFragmentManager());
-        adapter = FragmentPagerAdapter.Builder.get(getSupportFragmentManager())
+        adapter = FragmentPagerAdapter.Builder.create(getSupportFragmentManager())
                 .addItem("/Fragment/test").setId("1").ok()
                 .addItem("/Fragment/test").setId("2").ok()
                 .addItem("/Fragment/test").setId("3").ok()

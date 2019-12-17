@@ -23,8 +23,6 @@ import java.util.List;
  * <p>
  * 功能介绍：viewpager显示fragment的适配器,用路由模式去寻找fragment
  * 可以设置缓存fragment，第一次会使用Arouter去发现Fragment，后续就会缓存起来
- * <p>
- * 如果开启缓存，可能会被检测到Fragment内存泄漏
  */
 
 public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
@@ -47,7 +45,7 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     protected Fragment mCurrentPrimaryItem = null;
 
     private FragmentPagerAdapter(Builder builder) {
-        super(builder.fm);
+        super(builder.fm, builder.isBehavior ? BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT : BEHAVIOR_SET_USER_VISIBLE_HINT);
         fragmentManager = builder.fm;
         this.pagerItems = builder.items;
         setCache(builder.isCache);
@@ -85,8 +83,8 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, Object object) {
-        super.destroyItem(container, position, object);
         if (!isCache) {
+            super.destroyItem(container, position, object);
             mCacheFragment.remove(position);
         }
     }
@@ -219,13 +217,35 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
         FragmentManager fm;
         List<FragmentPagerItem> items = new ArrayList<>();
         private boolean isCache;
+        private boolean isBehavior;
 
-        private Builder(FragmentManager fm) {
+        private Builder(FragmentManager fm, boolean isBehavior) {
             this.fm = fm;
+            this.isBehavior = isBehavior;
         }
 
+        /**
+         * 这个方法对应老的版本的Fragment
+         * 会调用 setUserVisibleHint  可能没View没出来也会调用
+         *
+         * @param fm
+         * @return
+         * @deprecated 请使用 {@link #create(FragmentManager)}
+         */
+        @Deprecated
         public static Builder get(FragmentManager fm) {
-            return new Builder(fm);
+            return new Builder(fm, false);
+        }
+
+        /**
+         * 新版本Fragment
+         * 获取焦点（包括滑动）会调用onResume, 失去焦点（包括滑动走了） 会调用 onPause
+         *
+         * @param fm
+         * @return
+         */
+        public static Builder create(FragmentManager fm) {
+            return new Builder(fm, true);
         }
 
         public Builder setItems(List<FragmentPagerItem> items) {

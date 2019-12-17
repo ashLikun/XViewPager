@@ -55,4 +55,5 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"
     implementation "jp.wasabeef:glide-transformations:3.0.1"
     implementation 'com.github.ashLikun:GlideUtils:1.0.0'
+    implementation 'com.github.ashLikun:CommonAdapter:3.0.3'
 }
