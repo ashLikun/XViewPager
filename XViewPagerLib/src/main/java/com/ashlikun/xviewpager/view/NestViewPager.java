@@ -127,41 +127,6 @@ public class NestViewPager extends ViewPager {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (refreshLayout == null) {
-            int action = ev.getAction();
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
-                    // 记录手指按下的位置
-                    startY = ev.getY();
-                    startX = ev.getX();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    // 获取当前手指位置
-                    float endY = ev.getY();
-                    float endX = ev.getX();
-                    float distanceX = Math.abs(endX - startX);
-                    float distanceY = Math.abs(endY - startY);
-                    if (distanceX > touchSlop && distanceX > distanceY) {
-                        if (getParent() != null) {
-                            getParent().requestDisallowInterceptTouchEvent(true);
-                        }
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (getParent() != null) {
-                        getParent().requestDisallowInterceptTouchEvent(false);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (!isCanSlide) {
             return false;
@@ -211,6 +176,40 @@ public class NestViewPager extends ViewPager {
         if (!isCanSlide) {
             return false;
         } else {
+
+            if (refreshLayout == null) {
+                int action = ev.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // 记录手指按下的位置
+                        startY = ev.getY();
+                        startX = ev.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // 获取当前手指位置
+                        float endY = ev.getY();
+                        float endX = ev.getX();
+                        float distanceX = Math.abs(endX - startX);
+                        float distanceY = Math.abs(endY - startY);
+                        if (distanceX > touchSlop && distanceX > distanceY) {
+                            if (getParent() != null) {
+                                int or = (int) (startX - endX);
+                                boolean canScrollHorizontally = canScrollHorizontally(or);
+                                getParent().requestDisallowInterceptTouchEvent(canScrollHorizontally);
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        if (getParent() != null) {
+                            getParent().requestDisallowInterceptTouchEvent(false);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             //可能发生  IllegalArgumentException: pointerIndex out of range报错字符串索引超出范围
             try {
                 if (scrollMode == ScrollMode.VERTICAL) {
