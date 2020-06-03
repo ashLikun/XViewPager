@@ -37,12 +37,12 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bannerViewPager = findViewById(R.id.bannerViewPager);
+//        bannerViewPager = findViewById(R.id.bannerViewPager);
 //        bannerViewPager.setRefreshLayout(findViewById(R.id.swipeRefresh));
         convenientBanner = findViewById(R.id.convenientBanner);
         convenientBanner.setIndicator(new TransIndicator(this));
-        bannerViewPager.setPages(this, new ArrayList(Arrays.asList(RESURL)));
-        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL2)));
+//        bannerViewPager.setPages(this, new ArrayList(Arrays.asList(RESURL)));
+        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL)));
         convenientBanner.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BannerViewPager banner, Object data, int position) {

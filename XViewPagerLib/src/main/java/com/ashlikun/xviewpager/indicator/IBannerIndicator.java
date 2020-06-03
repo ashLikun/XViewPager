@@ -3,12 +3,13 @@ package com.ashlikun.xviewpager.indicator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.ViewPagerUtils;
@@ -24,7 +25,7 @@ import java.util.List;
  * 功能介绍：Banner指示器的View接口，其他view只需实现这个接口就可以了
  * 继承自LinearLayout
  */
-public abstract class IBannerIndicator extends LinearLayout implements ViewPager.OnPageChangeListener {
+public abstract class IBannerIndicator extends LinearLayout {
     /**
      * 资源，必须要有大小
      */
@@ -113,37 +114,36 @@ public abstract class IBannerIndicator extends LinearLayout implements ViewPager
         return this;
     }
 
-    @Override
-    public final void onPageScrollStateChanged(int state) {
+    public ViewPager.OnPageChangeListener onPageChangeCallback = new ViewPager.OnPageChangeListener() {
 
-    }
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position >= getItemCount()) {
+                return;
+            }
+            onPointScrolled(position, positionOffset, positionOffsetPixels);
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (datas == null) {
+                return;
+            }
+            if (position >= getItemCount()) {
+                return;
+            }
+            onPointSelected(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
 
     public int getItemCount() {
         return datas == null ? 0 : datas.size();
-    }
-
-    @Override
-    public final void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (datas == null) {
-            return;
-        }
-        position = ViewPagerUtils.getRealPosition(position, getItemCount());
-        if (position >= getItemCount()) {
-            return;
-        }
-        onPointScrolled(position, positionOffset, positionOffsetPixels);
-    }
-
-    @Override
-    public final void onPageSelected(int position) {
-        if (datas == null) {
-            return;
-        }
-        position = ViewPagerUtils.getRealPosition(position, getItemCount());
-        if (position >= getItemCount()) {
-            return;
-        }
-        onPointSelected(position);
     }
 
     public abstract void onPointSelected(int selectIndex);

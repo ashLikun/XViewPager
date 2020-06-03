@@ -5,10 +5,13 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import androidx.annotation.NonNull;
+
 import com.ashlikun.xviewpager.R;
-import com.ashlikun.xviewpager.ViewPagerUtils;
+import com.ashlikun.xviewpager.adapter.BasePageAdapter;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
 import com.ashlikun.xviewpager.listener.PageWidthListener;
+import com.ashlikun.xviewpager.listener.RealOnPageChangeCallback;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 
 import java.lang.ref.WeakReference;
@@ -24,14 +27,13 @@ import java.util.List;
  * 2:可以用作启动页
  */
 
-public class BannerViewPager extends NestViewPager {
+public class BannerViewPager extends XViewPager {
     //判断点击的最大移动距离
     private static final float SENS = 5;
     public static final long DEFAULT_TURNING_TIME = 5000;
     public static final float DEFAULT_RATIO = 16 / 9.0f;
-    OnPageChangeListener mOuterPageChangeListener;
     private OnItemClickListener onItemClickListener;
-    private CusPageAdapter mAdapter;
+    private BasePageAdapter mAdapter;
     //是否可以触摸滚动
     private boolean isCanTouchScroll = true;
     //是否可以循环
@@ -67,12 +69,10 @@ public class BannerViewPager extends NestViewPager {
         isOneDataOffLoopAndTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isOneDataOffLoopAndTurning, isOneDataOffLoopAndTurning);
         turningTime = a.getInteger(R.styleable.BannerViewPager_banner_turningTime, (int) turningTime);
         isCanTouchScroll = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isCanTouchScroll);
-        isAutoTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isCanTouchScroll, isAutoTurning);
+        isAutoTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isAutoTurning, isAutoTurning);
         a.recycle();
         setTurningTime(turningTime);
-        addOnPageChangeListener(onPageChangeListener);
         adSwitchTask = new AdSwitchTask(this);
-
     }
 
     public void setTurningTime(long turningTime) {
@@ -87,11 +87,7 @@ public class BannerViewPager extends NestViewPager {
         if (mAdapter == null) {
             return 0;
         }
-        return canLoop ? mAdapter.getRealCount() : 0;
-    }
-
-    public int getLastItem() {
-        return mAdapter.getRealCount() - 1;
+        return canLoop ? mAdapter.getRealCount() * 10000 : 0;
     }
 
     public boolean isCanTouchScroll() {
@@ -178,13 +174,18 @@ public class BannerViewPager extends NestViewPager {
 
 
     @Override
-    public CusPageAdapter getAdapter() {
+    public BasePageAdapter getAdapter() {
         return mAdapter;
     }
 
-    public int getRealPosition() {
-        return ViewPagerUtils.getRealPosition(getCurrentItem(), mAdapter != null ? mAdapter.getRealCount() : 0);
+    public int getRealPosition(int position) {
+        return mAdapter == null ? 0 : mAdapter.getRealPosition(position);
     }
+
+    public int getRealPosition() {
+        return mAdapter == null ? 0 : mAdapter.getRealPosition(getCurrentItem());
+    }
+
 
     /**
      * adapter真实的个数
@@ -205,49 +206,10 @@ public class BannerViewPager extends NestViewPager {
     }
 
 
-    /**
-     * 还原原始的position翻页监听
-     * {@link com.ashlikun.xviewpager.listener.OnBannerPageChangeListener}
-     *
-     * @param listener
-     */
-    public void setOnBannerChangeListener(OnPageChangeListener listener) {
-        mOuterPageChangeListener = listener;
+    @Override
+    public void addOnPageChangeListener(@NonNull OnPageChangeListener listener) {
+        super.addOnPageChangeListener(new RealOnPageChangeCallback(listener, this));
     }
-
-
-    private OnPageChangeListener onPageChangeListener = new OnPageChangeListener() {
-        private float mPreviousPosition = -1;
-
-        @Override
-        public void onPageSelected(int position) {
-            int realPosition = ViewPagerUtils.getRealPosition(position, mAdapter.getRealCount());
-            if (mPreviousPosition != realPosition) {
-                mPreviousPosition = realPosition;
-                if (mOuterPageChangeListener != null) {
-                    mOuterPageChangeListener.onPageSelected(realPosition);
-                }
-            }
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset,
-                                   int positionOffsetPixels) {
-            int realPosition = ViewPagerUtils.getRealPosition(position, mAdapter.getRealCount());
-
-            if (mOuterPageChangeListener != null) {
-                mOuterPageChangeListener.onPageScrolled(realPosition,
-                        positionOffset, positionOffsetPixels);
-            }
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            if (mOuterPageChangeListener != null) {
-                mOuterPageChangeListener.onPageScrollStateChanged(state);
-            }
-        }
-    };
 
     public boolean isCanLoop() {
         return canLoop;
@@ -256,7 +218,7 @@ public class BannerViewPager extends NestViewPager {
     public void setCanLoop(boolean canLoop) {
         this.canLoop = canLoop;
         if (canLoop == false) {
-            setCurrentItem(getRealPosition(), false);
+            setCurrentItem(getFristItem(), false);
         }
         if (mAdapter == null) {
             return;
@@ -341,7 +303,7 @@ public class BannerViewPager extends NestViewPager {
             return this;
         }
         if (mAdapter == null) {
-            mAdapter = new CusPageAdapter<>(this, holderCreator, datas);
+            mAdapter = new BasePageAdapter<>(this, holderCreator, datas);
             mAdapter.setCanLoop(canLoop);
             setAdapter(mAdapter);
         } else {
@@ -369,7 +331,7 @@ public class BannerViewPager extends NestViewPager {
         if (mAdapter == null) {
             return null;
         }
-        return mAdapter.datas;
+        return mAdapter.getDatas();
     }
 
     /***

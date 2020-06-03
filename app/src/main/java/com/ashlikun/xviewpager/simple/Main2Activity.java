@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ashlikun.xviewpager.FragmentUtils;
 import com.ashlikun.xviewpager.fragment.FragmentPagerAdapter;
-import com.ashlikun.xviewpager.view.NestViewPager;
+import com.ashlikun.xviewpager.view.XViewPager;
 
 /**
  * 作者　　: 李坤
@@ -19,7 +19,7 @@ import com.ashlikun.xviewpager.view.NestViewPager;
  */
 public class Main2Activity extends AppCompatActivity {
 
-    NestViewPager fragmentLayout = null;
+    XViewPager fragmentLayout = null;
     FragmentPagerAdapter adapter;
 
     @Override

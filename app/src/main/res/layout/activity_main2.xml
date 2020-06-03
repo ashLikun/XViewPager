@@ -7,11 +7,11 @@
     android:orientation="vertical"
     tools:context="com.ashlikun.xviewpager.simple.Main2Activity">
 
-    <com.ashlikun.xviewpager.view.NestViewPager
+    <com.ashlikun.xviewpager.view.XViewPager
         android:id="@+id/fragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"></com.ashlikun.xviewpager.view.NestViewPager>
+        android:layout_weight="1"></com.ashlikun.xviewpager.view.XViewPager>
 
     <LinearLayout
         android:layout_width="match_parent"

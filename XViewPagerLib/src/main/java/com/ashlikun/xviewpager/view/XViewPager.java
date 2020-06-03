@@ -31,11 +31,26 @@ import java.util.Arrays;
  * 3:外层是下拉刷新控件可以处理嵌套滑动问题
  */
 
-public class NestViewPager extends ViewPager {
+public class XViewPager extends ViewPager {
     private static final String BAIDU_MAP1 = "com.baidu.mapapi.map.MapView";
     private static final String BAIDU_MAP2 = "com.baidu.mapapi.map.TextureMapView";
     private static final String GAODE_MAP1 = "com.amap.api.maps.MapView";
     private static final String GAODE_MAP2 = "com.amap.api.maps.TextureMapView";
+
+
+    public XViewPager(Context context) {
+        this(context, null);
+    }
+
+    public XViewPager(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public XViewPager(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs);
+        initView(context, attrs);
+    }
+
     private float startX, startY;
     private ArrayList<Class> classes;
     //ViewPager是否可以滑动
@@ -59,37 +74,29 @@ public class NestViewPager extends ViewPager {
     //圆角半径  坐下
     protected float radiusLeftBottom = -1;
 
-    public NestViewPager(Context context) {
-        this(context, null);
-    }
 
-    public NestViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initView(context, attrs);
-    }
-
-    private void initView(Context context, AttributeSet attrs) {
+    protected void initView(Context context, AttributeSet attrs) {
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NestViewPager);
-        ratio = a.getFloat(R.styleable.NestViewPager_nvp_ratio, 0);
-        orientation = a.getInt(R.styleable.NestViewPager_nvp_orientation, 0);
-        isCanSlide = a.getBoolean(R.styleable.NestViewPager_nvp_isCanSlide, isCanSlide);
-        setScrollMode(ScrollMode.getScrollMode(a.getInt(R.styleable.NestViewPager_nvp_scrollMode, scrollMode.id)));
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.XViewPager);
+        ratio = a.getFloat(R.styleable.XViewPager_xvp_ratio, 0);
+        orientation = a.getInt(R.styleable.XViewPager_xvp_orientation, 0);
+        isCanSlide = a.getBoolean(R.styleable.XViewPager_xvp_isCanSlide, isCanSlide);
+        setScrollMode(ScrollMode.getScrollMode(a.getInt(R.styleable.XViewPager_xvp_scrollMode, scrollMode.id)));
         //圆角设置
-        if (a.hasValue(R.styleable.NestViewPager_nvp_radius)) {
-            radiusLeftTop = radiusRightTop = radiusRightBottom = radiusLeftBottom = a.getDimension(R.styleable.NestViewPager_nvp_radius, -1);
+        if (a.hasValue(R.styleable.XViewPager_xvp_radius)) {
+            radiusLeftTop = radiusRightTop = radiusRightBottom = radiusLeftBottom = a.getDimension(R.styleable.XViewPager_xvp_radius, -1);
         }
-        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusLeftTop)) {
-            radiusLeftTop = a.getDimension(R.styleable.NestViewPager_nvp_radiusLeftTop, radiusLeftTop);
+        if (a.hasValue(R.styleable.XViewPager_xvp_radiusLeftTop)) {
+            radiusLeftTop = a.getDimension(R.styleable.XViewPager_xvp_radiusLeftTop, radiusLeftTop);
         }
-        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusRightTop)) {
-            radiusRightTop = a.getDimension(R.styleable.NestViewPager_nvp_radiusRightTop, radiusRightTop);
+        if (a.hasValue(R.styleable.XViewPager_xvp_radiusRightTop)) {
+            radiusRightTop = a.getDimension(R.styleable.XViewPager_xvp_radiusRightTop, radiusRightTop);
         }
-        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusRightBottom)) {
-            radiusRightBottom = a.getDimension(R.styleable.NestViewPager_nvp_radiusRightBottom, radiusRightBottom);
+        if (a.hasValue(R.styleable.XViewPager_xvp_radiusRightBottom)) {
+            radiusRightBottom = a.getDimension(R.styleable.XViewPager_xvp_radiusRightBottom, radiusRightBottom);
         }
-        if (a.hasValue(R.styleable.NestViewPager_nvp_radiusLeftBottom)) {
-            radiusLeftBottom = a.getDimension(R.styleable.NestViewPager_nvp_radiusLeftBottom, radiusLeftBottom);
+        if (a.hasValue(R.styleable.XViewPager_xvp_radiusLeftBottom)) {
+            radiusLeftBottom = a.getDimension(R.styleable.XViewPager_xvp_radiusLeftBottom, radiusLeftBottom);
         }
         a.recycle();
     }

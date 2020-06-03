@@ -1,6 +1,7 @@
 package com.ashlikun.xviewpager;
 
 import android.content.Context;
+
 import androidx.viewpager.widget.ViewPager;
 
 import java.lang.reflect.Field;
@@ -41,15 +42,15 @@ public class ViewPagerUtils {
      * 无线循环的时候根据position返回真实的position
      *
      * @param position
-     * @param realCount 真实的个数
+     * @param allNumber 真实的个数
      * @return
      */
 
-    public static int getRealPosition(int position, int realCount) {
-        if (realCount == 0) {
+    public static int getRealPosition(int position, int allNumber) {
+        if (allNumber == 0) {
             return 0;
         }
-        int realPosition = position % realCount;
+        int realPosition = position % allNumber;
         return realPosition;
     }
 }

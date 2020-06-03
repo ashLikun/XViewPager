@@ -25,21 +25,25 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <com.ashlikun.xviewpager.view.BannerViewPager
-                    android:id="@+id/bannerViewPager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:banner_turningTime="4000"
-                    app:nvp_radius="10dp"
-                    app:nvp_ratio="1.77" />
+                <!--                <com.ashlikun.xviewpager.view.BannerViewPager-->
+                <!--                    android:id="@+id/bannerViewPager"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    app:banner_turningTime="4000"-->
+                <!--                    app:xvp_radius="10dp"-->
+                <!--                    app:xvp_ratio="1.77" />-->
 
                 <com.ashlikun.xviewpager.ConvenientBanner
                     android:id="@+id/convenientBanner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:banner_radiusLeftBottom="20dp"
-                    app:ind_style="ind_zoom" />
+                    app:banner_isAutoTurning="false"
+                    app:banner_turningTime="1000"
+                    app:ind_select="@drawable/circle_select"
+                    app:ind_style="ind_zoom"
+                    app:xvp_radiusLeftBottom="20dp"
+                    app:xvp_ratio="2.77" />
 
                 <!--<View-->
                 <!--android:layout_width="match_parent"-->

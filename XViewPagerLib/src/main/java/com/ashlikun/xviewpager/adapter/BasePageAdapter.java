@@ -1,12 +1,14 @@
-package com.ashlikun.xviewpager.view;
+package com.ashlikun.xviewpager.adapter;
 
-import androidx.viewpager.widget.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.ashlikun.xviewpager.ViewPagerUtils;
 import com.ashlikun.xviewpager.listener.PageWidthListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
+import com.ashlikun.xviewpager.view.BannerViewPager;
 
 import java.util.List;
 
@@ -17,8 +19,8 @@ import java.util.List;
  * <p>
  * 功能介绍：banner的适配器
  */
-class CusPageAdapter<T> extends PagerAdapter {
-    private final int MULTIPLE_COUNT = 3000;
+public class BasePageAdapter<T> extends PagerAdapter {
+    public static final int MULTIPLE_COUNT = Integer.MAX_VALUE;
     protected List<T> datas;
     protected ViewPageHelperListener holderCreator;
     protected PageWidthListener pageWidthListener;
@@ -28,20 +30,38 @@ class CusPageAdapter<T> extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return canLoop ? getRealCount() * MULTIPLE_COUNT : getRealCount();
+        if (datas == null) {
+            return 0;
+        }
+        return canLoop ? MULTIPLE_COUNT : getRealCount();
     }
 
     public int getRealCount() {
         return datas == null ? 0 : datas.size();
     }
 
+    /**
+     * 获取真实的Position
+     */
+    public int getRealPosition(int position) {
+        if (canLoop) {
+            return ViewPagerUtils.getRealPosition(position, getRealCount());
+        }
+        return position;
+    }
+
+
+    public T getItemData(int position) {
+        if (position >= 0 && position < getRealCount() && datas != null) {
+            return datas.get(position);
+        }
+        return null;
+    }
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        int realPosition = ViewPagerUtils.getRealPosition(position, getRealCount());
-        Object data = null;
-        if (datas != null && !datas.isEmpty()) {
-            data = datas.get(realPosition);
-        }
+        int realPosition = getRealPosition(position);
+        Object data = getItemData(realPosition);
         View view = holderCreator.createView(viewPager.getContext(), viewPager, data, realPosition);
         container.addView(view);
         return view;
@@ -53,19 +73,6 @@ class CusPageAdapter<T> extends PagerAdapter {
         container.removeView(view);
     }
 
-    @Override
-    public void finishUpdate(ViewGroup container) {
-        int position = viewPager.getCurrentItem();
-        if (position == 0) {
-            position = viewPager.getFristItem();
-        } else if (position == getCount() - 1) {
-            position = viewPager.getLastItem();
-        }
-        try {
-            viewPager.setCurrentItem(position, false);
-        } catch (IllegalStateException e) {
-        }
-    }
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
@@ -77,7 +84,7 @@ class CusPageAdapter<T> extends PagerAdapter {
     }
 
 
-    public CusPageAdapter(BannerViewPager bannerViewPager, ViewPageHelperListener holderCreator, List<T> datas) {
+    public BasePageAdapter(BannerViewPager bannerViewPager, ViewPageHelperListener holderCreator, List<T> datas) {
         this.viewPager = bannerViewPager;
         this.holderCreator = holderCreator;
         this.datas = datas;
@@ -121,5 +128,9 @@ class CusPageAdapter<T> extends PagerAdapter {
 
     public void setDatas(List datas) {
         this.datas = datas;
+    }
+
+    public List<T> getDatas() {
+        return datas;
     }
 }
