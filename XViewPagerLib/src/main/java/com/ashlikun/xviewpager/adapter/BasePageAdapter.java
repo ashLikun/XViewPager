@@ -25,7 +25,6 @@ public class BasePageAdapter<T> extends PagerAdapter {
     protected ViewPageHelperListener holderCreator;
     protected PageWidthListener pageWidthListener;
     private boolean canLoop = true;
-    private int POSITION_CHANG = POSITION_UNCHANGED;
     private BannerViewPager viewPager;
 
     @Override
@@ -102,12 +101,6 @@ public class BasePageAdapter<T> extends PagerAdapter {
         return super.getPageWidth(position);
     }
 
-    @Override
-    public void notifyDataSetChanged() {
-        POSITION_CHANG = POSITION_NONE;
-        super.notifyDataSetChanged();
-    }
-
     /**
      * 意思是如果item的位置如果没有发生变化，则返回POSITION_UNCHANGED。
      * 如果返回了POSITION_NONE，表示该位置的item已经不存在了。
@@ -118,12 +111,7 @@ public class BasePageAdapter<T> extends PagerAdapter {
      */
     @Override
     public int getItemPosition(Object object) {
-        if (POSITION_CHANG == POSITION_NONE) {
-            POSITION_CHANG = POSITION_UNCHANGED;
-            return POSITION_NONE;
-        } else {
-            return POSITION_UNCHANGED;
-        }
+        return POSITION_NONE;
     }
 
     public void setDatas(List datas) {
