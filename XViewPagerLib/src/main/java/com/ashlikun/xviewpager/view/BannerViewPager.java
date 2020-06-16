@@ -87,7 +87,7 @@ public class BannerViewPager extends XViewPager {
         if (mAdapter == null) {
             return 0;
         }
-        return canLoop ? mAdapter.getRealCount() * 10000 : 0;
+        return mAdapter.getFristItem();
     }
 
     public boolean isCanTouchScroll() {

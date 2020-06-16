@@ -39,6 +39,10 @@ public class BasePageAdapter<T> extends PagerAdapter {
         return datas == null ? 0 : datas.size();
     }
 
+    public int getFristItem() {
+        return canLoop ? MULTIPLE_COUNT / 2 : 0;
+    }
+
     /**
      * 获取真实的Position
      */
