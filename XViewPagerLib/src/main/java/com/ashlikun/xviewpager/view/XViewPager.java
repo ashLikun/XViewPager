@@ -15,6 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.anim.VerticalTransformer;
+import com.ashlikun.xviewpager.listener.OnCanScroll;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,6 +75,7 @@ public class XViewPager extends ViewPager {
     //圆角半径  坐下
     protected float radiusLeftBottom = -1;
 
+    private OnCanScroll onCanScroll = null;
 
     protected void initView(Context context, AttributeSet attrs) {
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
@@ -126,6 +128,7 @@ public class XViewPager extends ViewPager {
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
         String className = v.getClass().getName();
         return super.canScroll(v, checkV, dx, x, y)
+                || (onCanScroll != null && onCanScroll.canScroll(v, checkV, dx, x, y))
                 || BAIDU_MAP1.equals(className)
                 || BAIDU_MAP2.equals(className)
                 || GAODE_MAP1.equals(className)
@@ -345,6 +348,14 @@ public class XViewPager extends ViewPager {
             this.orientation = orientation;
             requestLayout();
         }
+    }
+
+    public void setOnCanScroll(OnCanScroll onCanScroll) {
+        this.onCanScroll = onCanScroll;
+    }
+
+    public OnCanScroll getOnCanScroll() {
+        return onCanScroll;
     }
 
     /**
