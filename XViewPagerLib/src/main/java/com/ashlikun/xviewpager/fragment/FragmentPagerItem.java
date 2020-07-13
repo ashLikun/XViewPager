@@ -85,13 +85,14 @@ public class FragmentPagerItem implements Serializable {
     }
 
     public FragmentPagerItem addParam(String key, Object value) {
-        if (TextUtils.isEmpty(key) || value == null) {
+        if (TextUtils.isEmpty(key)) {
             return this;
         }
         if (param == null) {
             param = new Bundle();
         }
-        if (param.containsKey(key)) {
+        if (value == null) {
+            param.remove(key);
             return this;
         }
         if (value instanceof String) {
