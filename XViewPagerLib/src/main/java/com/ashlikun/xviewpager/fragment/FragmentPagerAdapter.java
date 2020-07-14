@@ -77,6 +77,10 @@ public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        //防止ViewPager内容概率性不显示
+        if (isCache && getCacheFragment(position) != null) {
+            container.requestLayout();
+        }
         mCacheFragment.put(position, fragment);
         return fragment;
     }
