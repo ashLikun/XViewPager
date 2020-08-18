@@ -76,6 +76,9 @@ public class XViewPager extends ViewPager {
     protected float radiusLeftBottom = -1;
 
     private OnCanScroll onCanScroll = null;
+    private OnTouchListener dispatchTouchEvent = null;
+    private OnTouchListener interceptTouchEvent = null;
+    private OnTouchListener touchEvent = null;
 
     protected void initView(Context context, AttributeSet attrs) {
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
@@ -137,10 +140,19 @@ public class XViewPager extends ViewPager {
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (dispatchTouchEvent != null) {
+            if (dispatchTouchEvent.onTouch(this, ev)) {
+                super.dispatchTouchEvent(ev);
+                return true;
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!isCanSlide) {
-            return false;
-        } else {
+        if (isCanSlide) {
             if (refreshLayout != null) {
                 int action = ev.getAction();
                 switch (action) {
@@ -169,23 +181,40 @@ public class XViewPager extends ViewPager {
             }
             //可能发生  IllegalArgumentException: pointerIndex out of range报错字符串索引超出范围
             try {
+                if (touchEvent != null) {
+                    if (touchEvent.onTouch(this, ev)) {
+                        super.onTouchEvent(ev);
+                        return true;
+                    }
+                }
                 if (scrollMode == ScrollMode.VERTICAL) {
-                    return super.onTouchEvent(swapTouchEvent(ev));
+                    MotionEvent event = swapTouchEvent(ev);
+                    if (touchEvent != null) {
+                        if (touchEvent.onTouch(this, event)) {
+                            super.onTouchEvent(event);
+                            return true;
+                        }
+                    }
+                    return super.onTouchEvent(event);
+                }
+                if (touchEvent != null) {
+                    if (touchEvent.onTouch(this, ev)) {
+                        super.onTouchEvent(ev);
+                        return true;
+                    }
                 }
                 return super.onTouchEvent(ev);
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
             }
-            return false;
         }
+        return false;
     }
 
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!isCanSlide) {
-            return false;
-        } else {
+        if (isCanSlide) {
 
             if (refreshLayout == null) {
                 int action = ev.getAction();
@@ -194,6 +223,7 @@ public class XViewPager extends ViewPager {
                         // 记录手指按下的位置
                         startY = ev.getY();
                         startX = ev.getX();
+//                        getParent().requestDisallowInterceptTouchEvent(canScrollHorizontally);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         // 获取当前手指位置
@@ -222,17 +252,29 @@ public class XViewPager extends ViewPager {
 
             //可能发生  IllegalArgumentException: pointerIndex out of range报错字符串索引超出范围
             try {
+
                 if (scrollMode == ScrollMode.VERTICAL) {
+                    if (interceptTouchEvent != null) {
+                        if (interceptTouchEvent.onTouch(this, swapTouchEvent(ev))) {
+                            swapTouchEvent(ev);
+                            return true;
+                        }
+                    }
                     boolean intercept = super.onInterceptTouchEvent(swapTouchEvent(ev));
                     swapTouchEvent(ev);
                     return intercept;
+                }
+                if (interceptTouchEvent != null) {
+                    if (interceptTouchEvent.onTouch(this, ev)) {
+                        return true;
+                    }
                 }
                 return super.onInterceptTouchEvent(ev);
             } catch (IllegalArgumentException ex) {
                 ex.printStackTrace();
             }
-            return false;
         }
+        return false;
     }
 
     @Override
@@ -410,5 +452,21 @@ public class XViewPager extends ViewPager {
     public void setRadiusLeftBottom(float radiusLeftBottom) {
         this.radiusLeftBottom = radiusLeftBottom;
         invalidate();
+    }
+
+    public void setDispatchTouchEvent(OnTouchListener dispatchTouchEvent) {
+        this.dispatchTouchEvent = dispatchTouchEvent;
+    }
+
+    public void setInterceptTouchEvent(OnTouchListener interceptTouchEvent) {
+        this.interceptTouchEvent = interceptTouchEvent;
+    }
+
+    public void setTouchEvent(OnTouchListener touchEvent) {
+        this.touchEvent = touchEvent;
+    }
+
+    public interface OnTouchListener {
+        boolean onTouch(XViewPager viewPager, MotionEvent event);
     }
 }
