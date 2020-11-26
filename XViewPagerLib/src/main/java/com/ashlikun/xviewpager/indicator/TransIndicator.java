@@ -4,12 +4,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -126,11 +127,22 @@ public class TransIndicator extends IBannerIndicator {
 
     @Override
     public void onPointScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (position == pointViews.size() - 1 && positionOffset > 0) {
+
+    }
+
+    @Override
+    public void onPointScrolledReal(int position, int positionReal, float positionOffset, int positionOffsetPixels) {
+        super.onPointScrolledReal(position, positionReal, positionOffset, positionOffsetPixels);
+        if (positionReal == pointViews.size() - 1 && positionOffset > 0) {
             //最后一个向第一个移动
-            moveDistance = firstPosition[0] - moveSize;
+            if (position >= pointViews.size()) {
+                moveDistance = firstPosition[0] - moveSize + (positionReal * moveSize);
+            } else {
+                moveDistance = firstPosition[0] - moveSize + (position * moveSize);
+            }
+
         } else {
-            moveDistance = firstPosition[0] - moveSize + (positionOffset * moveSize + position * moveSize);
+            moveDistance = firstPosition[0] - moveSize + (positionOffset * moveSize + positionReal * moveSize);
         }
         invalidate();
     }

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.adapter.BasePageAdapter;
+import com.ashlikun.xviewpager.listener.ControlOnPageChangeCallback;
 import com.ashlikun.xviewpager.listener.OnItemClickListener;
 import com.ashlikun.xviewpager.listener.PageWidthListener;
 import com.ashlikun.xviewpager.listener.RealOnPageChangeCallback;
@@ -64,6 +65,7 @@ public class BannerViewPager extends XViewPager {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        super.addOnPageChangeListener(new ControlOnPageChangeCallback(this));
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BannerViewPager);
         canLoop = a.getBoolean(R.styleable.BannerViewPager_banner_canLoop, canLoop);
         isOneDataOffLoopAndTurning = a.getBoolean(R.styleable.BannerViewPager_banner_isOneDataOffLoopAndTurning, isOneDataOffLoopAndTurning);
@@ -211,6 +213,10 @@ public class BannerViewPager extends XViewPager {
         super.addOnPageChangeListener(new RealOnPageChangeCallback(listener, this));
     }
 
+    public void addOnPageChangeListenerReal(@NonNull OnPageChangeListener listener) {
+        super.addOnPageChangeListener(listener);
+    }
+
     public boolean isCanLoop() {
         return canLoop;
     }
@@ -218,7 +224,7 @@ public class BannerViewPager extends XViewPager {
     public void setCanLoop(boolean canLoop) {
         this.canLoop = canLoop;
         if (canLoop == false) {
-            setCurrentItem(getFristItem(), false);
+            setCurrentItemReal(getFristItem(), false);
         }
         if (mAdapter == null) {
             return;
@@ -286,9 +292,16 @@ public class BannerViewPager extends XViewPager {
      */
     public BannerViewPager setPages(final List datas) {
         if (mAdapter == null) {
-            throw new RuntimeException("没有发现holderCreator，请调用双参数的setPages");
+            throw new RuntimeException("没有发现holderCreator，请调用 setAdapter");
         }
         setPages(null, datas);
+        return this;
+    }
+
+    public BannerViewPager setAdapter(ViewPageHelperListener holderCreator) {
+        mAdapter = new BasePageAdapter<>(this, holderCreator, null);
+        mAdapter.setCanLoop(canLoop);
+        setAdapter(mAdapter);
         return this;
     }
 
@@ -303,16 +316,13 @@ public class BannerViewPager extends XViewPager {
             return this;
         }
         if (mAdapter == null) {
-            mAdapter = new BasePageAdapter<>(this, holderCreator, datas);
-            mAdapter.setCanLoop(canLoop);
-            setAdapter(mAdapter);
-        } else {
-            mAdapter.setCanLoop(canLoop);
-            mAdapter.setDatas(datas);
-            mAdapter.notifyDataSetChanged();
+            setAdapter(holderCreator);
         }
+        mAdapter.setCanLoop(canLoop);
+        mAdapter.setDatas(datas);
+        mAdapter.notifyDataSetChanged();
         mAdapter.setPageWidthListener(pageWidthListener);
-        setCurrentItem(getFristItem(), false);
+        setCurrentItemReal(getFristItem(), false);
 
         if (turning) {
             startTurning();
@@ -387,6 +397,27 @@ public class BannerViewPager extends XViewPager {
         startTurning();
     }
 
+    @Override
+    public void setCurrentItem(int item, boolean smoothScroll) {
+        super.setCurrentItem(mAdapter.getRealFanPosition(item), smoothScroll);
+    }
+
+    @Override
+    public void setCurrentItem(int item) {
+        super.setCurrentItem(mAdapter.getRealFanPosition(item));
+    }
+
+    /**
+     * 转换成真实的
+     */
+    public void setCurrentItemReal(int item, boolean smoothScroll) {
+        super.setCurrentItem(item, smoothScroll);
+    }
+
+    public void setCurrentItemReal(int item) {
+        super.setCurrentItem(item);
+    }
+
     /**
      * 自动滚动的倒计时
      */
@@ -403,11 +434,15 @@ public class BannerViewPager extends XViewPager {
             BannerViewPager bannerViewPager = reference.get();
             if (bannerViewPager != null && bannerViewPager.turning) {
                 int page = bannerViewPager.getCurrentItem() + 1;
-                if (page >= bannerViewPager.getItemCount()) {
-                    page = bannerViewPager.getFristItem();
+                bannerViewPager.setCurrentItemReal(page);
+                //不循环的时候 如果是最后一个就判断是否继续
+                if (!bannerViewPager.isCanLoop()) {
+                    if (page >= bannerViewPager.getItemCount() - BasePageAdapter.MULTIPLE_COUNT - 1) {
+                        bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime);
+                    }
+                } else {
+                    bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime);
                 }
-                bannerViewPager.setCurrentItem(page);
-                bannerViewPager.postDelayed(bannerViewPager.adSwitchTask, bannerViewPager.turningTime);
             }
         }
     }

@@ -13,6 +13,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xviewpager.R;
 import com.ashlikun.xviewpager.ViewPagerUtils;
+import com.ashlikun.xviewpager.listener.RealOnPageChangeCallback;
+import com.ashlikun.xviewpager.view.BannerViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +116,34 @@ public abstract class IBannerIndicator extends LinearLayout {
         return this;
     }
 
-    public ViewPager.OnPageChangeListener onPageChangeCallback = new ViewPager.OnPageChangeListener() {
+    public class MyOnPageChangeListener extends RealOnPageChangeCallback {
+
+        public MyOnPageChangeListener(BannerViewPager bannerViewPager) {
+            super(onPageChangeCallback, bannerViewPager);
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            int realPosition = bannerViewPager.getRealPosition(position);
+            onPointScrolledReal(position, realPosition, positionOffset, positionOffsetPixels);
+            super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            int realPosition = bannerViewPager.getRealPosition(position);
+            onPointSelectedReal(position, realPosition);
+            super.onPageSelected(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            super.onPageScrollStateChanged(state);
+            IBannerIndicator.this.onPageScrollStateChanged(state);
+        }
+    }
+
+    private ViewPager.OnPageChangeListener onPageChangeCallback = new ViewPager.OnPageChangeListener() {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -146,8 +175,19 @@ public abstract class IBannerIndicator extends LinearLayout {
         return datas == null ? 0 : datas.size();
     }
 
-    public abstract void onPointSelected(int selectIndex);
+    public void onPageScrollStateChanged(int state) {
+    }
+
+    public abstract void onPointSelected(int position);
+
+    public void onPointSelectedReal(int position, int positionReal) {
+
+    }
 
     public abstract void onPointScrolled(int position, float positionOffset, int positionOffsetPixels);
 
+
+    public void onPointScrolledReal(int position, int positionReal, float positionOffset, int positionOffsetPixels) {
+
+    }
 }

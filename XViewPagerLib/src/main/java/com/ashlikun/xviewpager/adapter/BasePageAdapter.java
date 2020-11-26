@@ -10,6 +10,7 @@ import com.ashlikun.xviewpager.listener.PageWidthListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,52 +21,76 @@ import java.util.List;
  * 功能介绍：banner的适配器
  */
 public class BasePageAdapter<T> extends PagerAdapter {
-    public static final int MULTIPLE_COUNT = Integer.MAX_VALUE;
-    protected List<T> datas;
+    //数据前后各加多少个假数据(前后加上2)，如果循环的时候
+    public static final int MULTIPLE_COUNT = 1;
+    protected List<T> mDatas;
     protected ViewPageHelperListener holderCreator;
     protected PageWidthListener pageWidthListener;
     private boolean canLoop = true;
     private BannerViewPager viewPager;
+    private List<View> views;
+
+    public BasePageAdapter(BannerViewPager bannerViewPager, ViewPageHelperListener holderCreator, List<T> mDatas) {
+        this.viewPager = bannerViewPager;
+        this.holderCreator = holderCreator;
+        this.mDatas = mDatas;
+    }
+
+    private void initViews() {
+        if (mDatas == null) {
+            return;
+        }
+        views = new ArrayList<>();
+        for (int i = 0; i < getCount(); i++) {
+            int position = getRealPosition(i);
+            views.add(holderCreator.createView(viewPager.getContext(), viewPager, getItemData(position), position));
+        }
+    }
 
     @Override
     public int getCount() {
-        if (datas == null) {
+        if (mDatas == null) {
             return 0;
         }
-        return canLoop ? MULTIPLE_COUNT : getRealCount();
+        return canLoop ? getRealCount() + MULTIPLE_COUNT * 2 : getRealCount();
     }
 
     public int getRealCount() {
-        return datas == null ? 0 : datas.size();
+        return mDatas == null ? 0 : mDatas.size();
     }
 
     public int getFristItem() {
-        return canLoop ? MULTIPLE_COUNT / 2 : 0;
+        return canLoop ? MULTIPLE_COUNT : 0;
     }
 
     /**
      * 获取真实的Position
      */
     public int getRealPosition(int position) {
-        if (canLoop) {
-            return ViewPagerUtils.getRealPosition(position, getRealCount());
-        }
-        return position;
+        return canLoop ? ViewPagerUtils.getRealPosition(position, getCount()) : position;
     }
 
+    /**
+     * 反转换
+     */
+    public int getRealFanPosition(int position) {
+        return canLoop ? position + MULTIPLE_COUNT : position;
+    }
 
     public T getItemData(int position) {
-        if (position >= 0 && position < getRealCount() && datas != null) {
-            return datas.get(position);
+        if (position >= 0 && position < getRealCount() && mDatas != null) {
+            return mDatas.get(position);
         }
         return null;
     }
 
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        int realPosition = getRealPosition(position);
-        Object data = getItemData(realPosition);
-        View view = holderCreator.createView(viewPager.getContext(), viewPager, data, realPosition);
+        if (views == null) {
+            initViews();
+        }
+        View view = views.get(position);
         container.addView(view);
         return view;
     }
@@ -86,12 +111,6 @@ public class BasePageAdapter<T> extends PagerAdapter {
         this.canLoop = canLoop;
     }
 
-
-    public BasePageAdapter(BannerViewPager bannerViewPager, ViewPageHelperListener holderCreator, List<T> datas) {
-        this.viewPager = bannerViewPager;
-        this.holderCreator = holderCreator;
-        this.datas = datas;
-    }
 
     public void setPageWidthListener(PageWidthListener pageWidthListener) {
         this.pageWidthListener = pageWidthListener;
@@ -118,11 +137,12 @@ public class BasePageAdapter<T> extends PagerAdapter {
         return POSITION_NONE;
     }
 
-    public void setDatas(List datas) {
-        this.datas = datas;
+    public void setDatas(List mDatas) {
+        this.mDatas = mDatas;
+        views = null;
     }
 
     public List<T> getDatas() {
-        return datas;
+        return mDatas;
     }
 }

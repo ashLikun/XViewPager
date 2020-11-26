@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.viewpager.widget.ViewPager;
 
+import com.ashlikun.xviewpager.adapter.BasePageAdapter;
+
 import java.lang.reflect.Field;
 
 /**
@@ -42,15 +44,22 @@ public class ViewPagerUtils {
      * 无线循环的时候根据position返回真实的position
      *
      * @param position
-     * @param allNumber 真实的个数
+     * @param allNumber 全部的数量，假的
      * @return
      */
 
     public static int getRealPosition(int position, int allNumber) {
-        if (allNumber == 0) {
+        if (allNumber <= BasePageAdapter.MULTIPLE_COUNT * 2 + 1) {
             return 0;
         }
-        int realPosition = position % allNumber;
-        return realPosition;
+        if (position < BasePageAdapter.MULTIPLE_COUNT) {
+            int diff = BasePageAdapter.MULTIPLE_COUNT - position;
+            //最后一个
+            return allNumber - BasePageAdapter.MULTIPLE_COUNT * 2 - diff;
+        } else if (position >= allNumber - BasePageAdapter.MULTIPLE_COUNT) {
+            //第一个
+            return position - (allNumber - BasePageAdapter.MULTIPLE_COUNT);
+        }
+        return position - BasePageAdapter.MULTIPLE_COUNT;
     }
 }

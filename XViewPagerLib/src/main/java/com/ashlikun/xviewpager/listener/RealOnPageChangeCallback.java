@@ -14,7 +14,7 @@ import com.ashlikun.xviewpager.view.BannerViewPager;
  */
 public class RealOnPageChangeCallback implements ViewPager.OnPageChangeListener {
     OnPageChangeListener callback;
-    BannerViewPager bannerViewPager;
+    protected BannerViewPager bannerViewPager;
     private int mPreviousPosition = -1;
 
     public RealOnPageChangeCallback(OnPageChangeListener callback, BannerViewPager bannerViewPager) {

@@ -87,7 +87,7 @@ public class ConvenientBanner extends FrameLayout {
             indicator.setLayoutParams(params2);
         }
         addView(indicator);
-        viewPager.addOnPageChangeListener(indicator.onPageChangeCallback);
+        viewPager.addOnPageChangeListenerReal(indicator.new MyOnPageChangeListener(viewPager));
     }
 
     /**
@@ -122,6 +122,11 @@ public class ConvenientBanner extends FrameLayout {
 
         viewPager.setPages(datas);
         indicator.setPages(datas, getCurrentItem());
+        return this;
+    }
+
+    public ConvenientBanner setAdapter(ViewPageHelperListener holderCreator) {
+        viewPager.setAdapter(holderCreator);
         return this;
     }
 
