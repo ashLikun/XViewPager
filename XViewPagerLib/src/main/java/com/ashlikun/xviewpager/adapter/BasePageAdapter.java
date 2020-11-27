@@ -36,16 +36,6 @@ public class BasePageAdapter<T> extends PagerAdapter {
         this.mDatas = mDatas;
     }
 
-    private void initViews() {
-        if (mDatas == null) {
-            return;
-        }
-        views = new ArrayList<>();
-        for (int i = 0; i < getCount(); i++) {
-            int position = getRealPosition(i);
-            views.add(holderCreator.createView(viewPager.getContext(), viewPager, getItemData(position), position));
-        }
-    }
 
     @Override
     public int getCount() {
@@ -88,9 +78,17 @@ public class BasePageAdapter<T> extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         if (views == null) {
-            initViews();
+            views = new ArrayList<>();
         }
-        View view = views.get(position);
+        View view = null;
+        if (position >= 0 && position < views.size()) {
+            views.get(position);
+        }
+        if (view == null) {
+            int pp = getRealPosition(position);
+            view = holderCreator.createView(viewPager.getContext(), viewPager, getItemData(pp), pp);
+            views.add(view);
+        }
         container.addView(view);
         return view;
     }
