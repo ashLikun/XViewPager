@@ -2,8 +2,8 @@ package com.ashlikun.xviewpager.simple;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -30,8 +30,7 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
                     "c394237ba9ffbb45fe8555a2cbec-6O6nmI_fw658.jpg",
             "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=4135477902,3355939884&fm=26&gp=0.jpg"};
     private static final Object[] RESURL2 = {
-            "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=4135477902,3355939884&fm=26&gp=0.jpg",
-            "http://img1.cache.netease.com/catchpic/A/A0/A0153E1AEDA115EAE7061A0C7EBB69D2.jpg"};
+            "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=4135477902,3355939884&fm=26&gp=0.jpg"};
     private static final Object[] RESURL3 = {
             "https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1606378608&di=e9634670eaf53ea726b8750eae7ddb66&src=http://pic1.win4000.com/pic/8/7d/6efd393311.jpg",
             "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1606388709669&di=33cf88738d5bc5978d0d7a40e08dc831&imgtype=0&src=http%3A%2F%2Fwww.yewn.cn%2Fdata%2Fattachment%2Fforum%2F201306%2F29%2F223918t3mm2blj5sofjsbf.jpg",
@@ -51,12 +50,11 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
         convenientBanner = findViewById(R.id.convenientBanner);
         convenientBanner.setIndicator(new TransIndicator(this));
 //        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL)));
-        convenientBanner.setAdapter(this);
-        convenientBanner.setPages(new ArrayList(Arrays.asList(RESURL)));
+        convenientBanner.setPages(this,new ArrayList(Arrays.asList(RESURL2)));
         convenientBanner.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BannerViewPager banner, Object data, int position) {
-                Toast.makeText(MainActivity.this, "" + position, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "aaa" + position, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -76,17 +74,16 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
 
     @Override
     public View createView(Context context, BannerViewPager banner, String data, int position) {
-        ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(-1, -1));
-        GlideUtils.show(imageView, data);
-        imageView.setOnClickListener(new View.OnClickListener() {
+        View inflate = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.main_item_order_details_goods, null);
+        GlideUtils.show((ImageView)inflate.findViewById(R.id.goodsIv), data);
+
+        inflate.findViewById(R.id.goodsPrintAction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "aaaaa", Toast.LENGTH_LONG).show();
             }
         });
-        return imageView;
+        return inflate;
     }
 
 }

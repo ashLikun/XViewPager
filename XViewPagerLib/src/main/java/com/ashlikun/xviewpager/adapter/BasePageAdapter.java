@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.ashlikun.xviewpager.ViewPagerUtils;
+import com.ashlikun.xviewpager.fragment.FragmentLayout;
 import com.ashlikun.xviewpager.listener.PageWidthListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
@@ -87,6 +88,21 @@ public class BasePageAdapter<T> extends PagerAdapter {
         if (view == null) {
             int pp = getRealPosition(position);
             view = holderCreator.createView(viewPager.getContext(), viewPager, getItemData(pp), pp);
+            if (viewPager.getOnItemClickListener() != null) {
+                if (view.hasOnClickListeners()) {
+                    FragmentLayout fragmentLayout = new FragmentLayout(container.getContext());
+                    fragmentLayout.addView(view);
+                    view = fragmentLayout;
+                }
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (getDatas() != null && viewPager.getRealPosition() < getDatas().size()) {
+                            viewPager.getOnItemClickListener().onItemClick(viewPager, getDatas().get(viewPager.getRealPosition()), viewPager.getRealPosition());
+                        }
+                    }
+                });
+            }
             views.add(view);
         }
         container.addView(view);
