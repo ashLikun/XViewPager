@@ -1,5 +1,6 @@
 package com.ashlikun.xviewpager.adapter;
 
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class BasePageAdapter<T> extends PagerAdapter {
     protected ViewPageHelperListener holderCreator;
     protected PageWidthListener pageWidthListener;
     private boolean canLoop = true;
+    private boolean isCache = true;
     private BannerViewPager viewPager;
     private SparseArray<View> views;
 
@@ -79,18 +81,23 @@ public class BasePageAdapter<T> extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        if (views == null) {
-            views = new SparseArray<>();
+        if (isCache) {
+            if (views == null) {
+                views = new SparseArray<>();
+            }
         }
         int pp = getRealPosition(position);
         T data = getItemData(pp);
-        View view = views.get(pp);
-        if (view != null) {
-            Object cache = view.getTag(TAG_KEY);
-            //判断缓存与data是否相等
-            if ((cache == null && data == null) || (cache != null && cache.equals(data)) || (data != null && data.equals(cache))) {
-            } else {
-                view = null;
+        View view = null;
+        if (isCache) {
+            view = views.get(position);
+            if (view != null) {
+                Object cache = view.getTag(TAG_KEY);
+                //判断缓存与data是否相等
+                if ((cache == null && data == null) || (cache != null && cache.equals(data)) || (data != null && data.equals(cache))) {
+                } else {
+                    view = null;
+                }
             }
         }
         if (view == null) {
@@ -110,7 +117,12 @@ public class BasePageAdapter<T> extends PagerAdapter {
                     }
                 });
             }
-            views.setValueAt(pp, view);
+            if (isCache) {
+                view.setTag(TAG_KEY, data);
+                views.put(position, view);
+            }
+        } else {
+            Log.e("aaa", position + "使用缓存" + pp);
         }
         container.addView(view);
         return view;
@@ -164,5 +176,13 @@ public class BasePageAdapter<T> extends PagerAdapter {
 
     public List<T> getDatas() {
         return mDatas;
+    }
+
+    public void setCache(boolean cache) {
+        isCache = cache;
+    }
+
+    public boolean isCache() {
+        return isCache;
     }
 }
