@@ -83,7 +83,7 @@ public class BasePageAdapter<T> extends PagerAdapter {
         }
         View view = null;
         if (position >= 0 && position < views.size()) {
-            views.get(position);
+            view = views.get(position);
         }
         if (view == null) {
             int pp = getRealPosition(position);

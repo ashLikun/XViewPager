@@ -3,6 +3,9 @@ package com.ashlikun.xviewpager.listener;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.ashlikun.xviewpager.view.BannerViewPager;
 
 /**
@@ -19,7 +22,8 @@ public interface ViewPageHelperListener<T> {
      *
      * @param banner
      * @param context
+     * @param data data可能是空的,loop模式的时候最少有
      * @return
      */
-    View createView(Context context, BannerViewPager banner, T data, int position);
+    View createView(@NonNull Context context, @NonNull BannerViewPager banner, @Nullable T data, int position);
 }
