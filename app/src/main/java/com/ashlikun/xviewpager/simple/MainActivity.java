@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
         convenientBanner = findViewById(R.id.convenientBanner);
         convenientBanner.setIndicator(new TransIndicator(this));
 //        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL)));
-        convenientBanner.setPages(this,new ArrayList(Arrays.asList(RESURL2)));
+        convenientBanner.setPages(this,new ArrayList(Arrays.asList(RESURL3)));
         convenientBanner.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BannerViewPager banner, Object data, int position) {

@@ -1,5 +1,6 @@
 package com.ashlikun.xviewpager.adapter;
 
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,7 +12,6 @@ import com.ashlikun.xviewpager.listener.PageWidthListener;
 import com.ashlikun.xviewpager.listener.ViewPageHelperListener;
 import com.ashlikun.xviewpager.view.BannerViewPager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,12 +24,13 @@ import java.util.List;
 public class BasePageAdapter<T> extends PagerAdapter {
     //数据前后各加多少个假数据(前后加上2)，如果循环的时候
     public static final int MULTIPLE_COUNT = 1;
+    public static final int TAG_KEY = 88888666;
     protected List<T> mDatas;
     protected ViewPageHelperListener holderCreator;
     protected PageWidthListener pageWidthListener;
     private boolean canLoop = true;
     private BannerViewPager viewPager;
-    private List<View> views;
+    private SparseArray<View> views;
 
     public BasePageAdapter(BannerViewPager bannerViewPager, ViewPageHelperListener holderCreator, List<T> mDatas) {
         this.viewPager = bannerViewPager;
@@ -79,15 +80,21 @@ public class BasePageAdapter<T> extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         if (views == null) {
-            views = new ArrayList<>();
+            views = new SparseArray<>();
         }
-        View view = null;
-        if (position >= 0 && position < views.size()) {
-            view = views.get(position);
+        int pp = getRealPosition(position);
+        T data = getItemData(pp);
+        View view = views.get(pp);
+        if (view != null) {
+            Object cache = view.getTag(TAG_KEY);
+            //判断缓存与data是否相等
+            if ((cache == null && data == null) || (cache != null && cache.equals(data)) || (data != null && data.equals(cache))) {
+            } else {
+                view = null;
+            }
         }
         if (view == null) {
-            int pp = getRealPosition(position);
-            view = holderCreator.createView(viewPager.getContext(), viewPager, getItemData(pp), pp);
+            view = holderCreator.createView(viewPager.getContext(), viewPager, data, pp);
             if (viewPager.getOnItemClickListener() != null) {
                 if (view.hasOnClickListeners()) {
                     FragmentLayout fragmentLayout = new FragmentLayout(container.getContext());
@@ -103,7 +110,7 @@ public class BasePageAdapter<T> extends PagerAdapter {
                     }
                 });
             }
-            views.add(view);
+            views.setValueAt(pp, view);
         }
         container.addView(view);
         return view;
@@ -153,10 +160,6 @@ public class BasePageAdapter<T> extends PagerAdapter {
 
     public void setDatas(List mDatas) {
         this.mDatas = mDatas;
-        if (views != null) {
-            views.clear();
-            views = null;
-        }
     }
 
     public List<T> getDatas() {
