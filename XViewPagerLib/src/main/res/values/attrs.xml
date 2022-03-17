@@ -38,6 +38,8 @@
     <attr name="xvp_radiusRightTop" format="reference|dimension"></attr>
     <attr name="xvp_radiusRightBottom" format="reference|dimension"></attr>
     <attr name="xvp_radiusLeftBottom" format="reference|dimension"></attr>
+    <!--滚动速度-->
+    <attr name="xvp_scrollTime" format="integer"></attr>
     <!--参考方向-->
     <attr name="banner_orientation">
         <enum name="width" value="0" />
@@ -77,6 +79,8 @@
         <attr name="xvp_radiusRightTop"></attr>
         <attr name="xvp_radiusRightBottom"></attr>
         <attr name="xvp_radiusLeftBottom"></attr>
+        <!--滚动速度-->
+        <attr name="xvp_scrollTime"></attr>
     </declare-styleable>
 
     <declare-styleable name="BannerViewPager">
@@ -108,6 +112,8 @@
         <attr name="xvp_radiusRightTop"></attr>
         <attr name="xvp_radiusRightBottom"></attr>
         <attr name="xvp_radiusLeftBottom"></attr>
+        <!--滚动速度-->
+        <attr name="xvp_scrollTime"></attr>
     </declare-styleable>
     <declare-styleable name="FragmentLayout">
         <attr name="fl_maxCache" format="integer"></attr>

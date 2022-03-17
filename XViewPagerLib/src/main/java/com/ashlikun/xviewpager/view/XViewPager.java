@@ -14,6 +14,7 @@ import android.view.ViewConfiguration;
 import androidx.viewpager.widget.ViewPager;
 
 import com.ashlikun.xviewpager.R;
+import com.ashlikun.xviewpager.ViewPagerUtils;
 import com.ashlikun.xviewpager.anim.VerticalTransformer;
 import com.ashlikun.xviewpager.listener.OnCanScroll;
 
@@ -74,7 +75,8 @@ public class XViewPager extends ViewPager {
     protected float radiusRightBottom = -1;
     //圆角半径  坐下
     protected float radiusLeftBottom = -1;
-
+    //切换速度
+    protected int scrollTime = -1;
     private OnCanScroll onCanScroll = null;
     private OnTouchListener dispatchTouchEvent = null;
     private OnTouchListener interceptTouchEvent = null;
@@ -103,6 +105,8 @@ public class XViewPager extends ViewPager {
         if (a.hasValue(R.styleable.XViewPager_xvp_radiusLeftBottom)) {
             radiusLeftBottom = a.getDimension(R.styleable.XViewPager_xvp_radiusLeftBottom, radiusLeftBottom);
         }
+        //滚动速度
+        setScrollTime(a.getInteger(R.styleable.XViewPager_xvp_scrollTime, scrollTime));
         a.recycle();
     }
 
@@ -464,6 +468,18 @@ public class XViewPager extends ViewPager {
 
     public void setTouchEvent(OnTouchListener touchEvent) {
         this.touchEvent = touchEvent;
+    }
+
+    public int getScrollTime() {
+        return scrollTime;
+    }
+
+    public void setScrollTime(int scrollTime) {
+        this.scrollTime = scrollTime;
+        //无法还原
+        if (scrollTime > 0) {
+            ViewPagerUtils.initSwitchTime(this, scrollTime);
+        }
     }
 
     public interface OnTouchListener {

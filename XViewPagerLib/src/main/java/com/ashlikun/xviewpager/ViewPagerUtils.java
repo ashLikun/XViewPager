@@ -22,11 +22,11 @@ public class ViewPagerUtils {
     /**
      * 设置viewpager 之间的切换速度
      */
-    public static void initSwitchTime(Context context, ViewPager viewPager, int time) {
+    public static void initSwitchTime(ViewPager viewPager, int time) {
         try {
             Field field = ViewPager.class.getDeclaredField("mScroller");
             field.setAccessible(true);
-            ViewPagerScroller scroller = new ViewPagerScroller(context);
+            ViewPagerScroller scroller = new ViewPagerScroller(viewPager.getContext());
             scroller.setScrollDuration(time);
             field.set(viewPager, scroller);
 
