@@ -137,7 +137,10 @@ public class BasePageAdapter<T> extends PagerAdapter {
 
     public void setDatas(List mDatas) {
         this.mDatas = mDatas;
-        views = null;
+        if (views != null) {
+            views.clear();
+            views = null;
+        }
     }
 
     public List<T> getDatas() {
