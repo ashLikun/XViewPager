@@ -122,12 +122,6 @@ public class BannerViewPager extends XViewPager {
                     break;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
-                    if (Math.abs(downX - ev.getX()) < SENS
-                            && Math.abs(downY - ev.getY()) < SENS) {
-                        if (getDatas() != null && getRealPosition() < getDatas().size()) {
-                            onItemClickListener.onItemClick(this, getDatas().get(getRealPosition()), getRealPosition());
-                        }
-                    }
                     getParent().requestDisallowInterceptTouchEvent(false);
                     requestDisallowInterceptTouchEvent(false);
                     break;
@@ -136,7 +130,7 @@ public class BannerViewPager extends XViewPager {
         if (isCanTouchScroll && !isOneDataOffLoopAndTurning()) {
             return super.onTouchEvent(ev);
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -145,7 +139,7 @@ public class BannerViewPager extends XViewPager {
         if (isCanTouchScroll && !isOneDataOffLoopAndTurning()) {
             return super.onInterceptTouchEvent(ev);
         } else {
-            return onItemClickListener != null;
+            return false;
         }
     }
 
@@ -375,7 +369,7 @@ public class BannerViewPager extends XViewPager {
      * @return
      */
     public boolean isOneDataOffLoopAndTurning() {
-        return isOneDataOffLoopAndTurning && getDatas() != null && getDatas().size() <= 1;
+        return canLoop && isOneDataOffLoopAndTurning && getDatas() != null && getDatas().size() <= 1;
     }
 
     /**
@@ -416,6 +410,10 @@ public class BannerViewPager extends XViewPager {
 
     public void setCurrentItemReal(int item) {
         super.setCurrentItem(item);
+    }
+
+    public OnItemClickListener getOnItemClickListener() {
+        return onItemClickListener;
     }
 
     /**
