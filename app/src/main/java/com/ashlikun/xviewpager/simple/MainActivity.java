@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
             "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F13879301788%2F641.jpg&refer=http%3A%2F%2Finews.gtimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1650119085&t=0bee7d9a47a5b4f26ba34e816c3284fb"
             , "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F12140897000%2F1000.jpg&refer=http%3A%2F%2Finews.gtimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1650119085&t=a9fef4103946056c2164ee72b2dc9166"
     };
+    private static final Object[] RESURL4 = {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
 //        bannerViewPager.setRefreshLayout(findViewById(R.id.swipeRefresh));
         convenientBanner = findViewById(R.id.convenientBanner);
         convenientBanner.setIndicator(new TransIndicator(this));
-        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL)));
+        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL4)));
 //        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL3)));
         convenientBanner.setOnItemClickListener(new OnItemClickListener() {
             @Override

@@ -43,7 +43,7 @@ public class BasePageAdapter<T> extends PagerAdapter {
 
     @Override
     public int getCount() {
-        if (mDatas == null) {
+        if (mDatas == null || mDatas.size() == 0) {
             return 0;
         }
         return canLoop ? getRealCount() + MULTIPLE_COUNT * 2 : getRealCount();
@@ -88,14 +88,16 @@ public class BasePageAdapter<T> extends PagerAdapter {
         }
         int pp = getRealPosition(position);
         T data = getItemData(pp);
+        if (data == null) {
+            throw new NullPointerException("data " + position + "   is null");
+        }
         View view = null;
         if (isCache) {
             view = views.get(position);
             if (view != null) {
                 Object cache = view.getTag(TAG_KEY);
                 //判断缓存与data是否相等
-                if ((cache == null && data == null) || (cache != null && cache.equals(data)) || (data != null && data.equals(cache))) {
-                } else {
+                if (!data.equals(cache)) {
                     view = null;
                 }
             }
