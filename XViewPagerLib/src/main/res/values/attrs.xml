@@ -18,6 +18,8 @@
     <attr name="ind_no_select" format="reference" />
     <!--选中的资源Id-->
     <attr name="ind_select" format="reference" />
+    <!--一条数据是否显示指示器-->
+    <attr name="ind_oneDateIsShow" format="boolean" />
     <!--比例   默认16/9.0f-->
     <attr name="xvp_ratio" format="reference|float"></attr>
     <!--参考方向-->
@@ -49,6 +51,7 @@
         <attr name="ind_space"></attr>
         <attr name="ind_no_select"></attr>
         <attr name="ind_select"></attr>
+        <attr name="ind_oneDateIsShow"></attr>
 
         <attr name="ind_style">
             <!--默认指示器-->
@@ -96,6 +99,7 @@
         <attr name="ind_space"></attr>
         <attr name="ind_no_select"></attr>
         <attr name="ind_select"></attr>
+        <attr name="ind_oneDateIsShow"></attr>
     </declare-styleable>
     <declare-styleable name="XViewPager">
         <!--比例   默认16/9.0f-->

@@ -3,13 +3,14 @@ package com.ashlikun.xviewpager.indicator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class ZoomIndicator extends IBannerIndicator {
     public ZoomIndicator notifyDataSetChanged(int selectIndex) {
         removeAllViews();
         pointViews.clear();
-        if (datas == null) {
+        if (datas == null || (!oneDateIsShow && datas.size() == 1)) {
             return this;
         }
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -97,6 +98,7 @@ public class ZoomIndicator extends IBannerIndicator {
                 targetViewAnim(view, true);
             }
         }
+
         return this;
     }
 

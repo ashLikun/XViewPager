@@ -34,6 +34,7 @@ public abstract class IBannerIndicator extends LinearLayout {
      */
     protected Drawable selectDraw;
     protected Drawable noSelectDraw;
+    protected boolean oneDateIsShow;
     /**
      * 间距
      */
@@ -55,6 +56,7 @@ public abstract class IBannerIndicator extends LinearLayout {
         space = (int) a.getDimension(R.styleable.IBannerIndicator_ind_space, ViewPagerUtils.dip2px(context, space));
         selectDraw = a.getDrawable(R.styleable.IBannerIndicator_ind_select);
         noSelectDraw = a.getDrawable(R.styleable.IBannerIndicator_ind_no_select);
+        oneDateIsShow = a.getBoolean(R.styleable.IBannerIndicator_ind_oneDateIsShow, true);
         if (selectDraw == null) {
             selectDraw = getResources().getDrawable(R.drawable.banner_circle_select, context.getTheme());
         }
@@ -62,6 +64,8 @@ public abstract class IBannerIndicator extends LinearLayout {
             noSelectDraw = getResources().getDrawable(R.drawable.banner_circle_default, context.getTheme());
         }
         a.recycle();
+        selectDraw.setBounds(0, 0, selectDraw.getIntrinsicWidth(), selectDraw.getIntrinsicHeight());
+        noSelectDraw.setBounds(0, 0, noSelectDraw.getIntrinsicWidth(), noSelectDraw.getIntrinsicHeight());
         setBackgroundColor(Color.TRANSPARENT);
         initView(context, attrs);
     }

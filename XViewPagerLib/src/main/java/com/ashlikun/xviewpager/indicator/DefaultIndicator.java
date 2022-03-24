@@ -1,13 +1,14 @@
 package com.ashlikun.xviewpager.indicator;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class DefaultIndicator extends IBannerIndicator {
     public DefaultIndicator notifyDataSetChanged(int selectIndex) {
         removeAllViews();
         pointViews.clear();
-        if (datas == null) {
+        if (datas == null || (!oneDateIsShow && datas.size() == 1)) {
             return this;
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

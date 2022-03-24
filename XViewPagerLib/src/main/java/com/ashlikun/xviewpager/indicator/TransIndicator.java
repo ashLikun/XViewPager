@@ -71,12 +71,12 @@ public class TransIndicator extends IBannerIndicator {
         firstLeft = pointViews.get(0).getLeft();
         if (pointViews.size() == 1) {
             moveSize = pointViews.get(0).getWidth() + space * 2;
-            moveDistance = firstLeft - moveSize;
+            moveDistance = firstLeft;
             return;
         }
         secondLeft = pointViews.get(1).getLeft();
         moveSize = secondLeft - firstLeft;
-        moveDistance = firstLeft - moveSize + currentSelect * moveSize;
+        moveDistance = firstLeft + currentSelect * moveSize;
     }
 
     @Override
@@ -94,7 +94,7 @@ public class TransIndicator extends IBannerIndicator {
     public TransIndicator notifyDataSetChanged(int selectIndex) {
         removeAllViews();
         pointViews.clear();
-        if (datas == null) {
+        if (datas == null || (!oneDateIsShow && datas.size() == 1)) {
             return this;
         }
         currentSelect = selectIndex;
