@@ -2,7 +2,6 @@ package com.ashlikun.xviewpager.indicator;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -31,8 +30,8 @@ public class TransIndicator extends IBannerIndicator {
      * 2个view的距离
      */
     private int moveSize = 0;
-    private int[] firstPosition = new int[2];
-    private int[] secondPositon = new int[2];
+    private int firstLeft = 0;
+    private int secondLeft = 0;
     private int currentSelect = 0;
 
     public TransIndicator(Context context) {
@@ -47,17 +46,12 @@ public class TransIndicator extends IBannerIndicator {
         super(context, attrs, defStyleAttr);
     }
 
-    Paint mPaint;
 
     @Override
     protected void initView(Context context, AttributeSet attrs) {
         setGravity(Gravity.CENTER);
         setClipChildren(false);
         setClipToPadding(false);
-
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(0xffff0000);
     }
 
     @Override
@@ -74,15 +68,15 @@ public class TransIndicator extends IBannerIndicator {
         if (pointViews.size() < 1) {
             return;
         }
-        pointViews.get(0).getLocationOnScreen(firstPosition);
+        firstLeft = pointViews.get(0).getLeft();
         if (pointViews.size() == 1) {
             moveSize = pointViews.get(0).getWidth() + space * 2;
-            moveDistance = firstPosition[0] - moveSize;
+            moveDistance = firstLeft - moveSize;
             return;
         }
-        pointViews.get(1).getLocationOnScreen(secondPositon);
-        moveSize = secondPositon[0] - firstPosition[0];
-        moveDistance = firstPosition[0] - moveSize + currentSelect * moveSize;
+        secondLeft = pointViews.get(1).getLeft();
+        moveSize = secondLeft - firstLeft;
+        moveDistance = firstLeft - moveSize + currentSelect * moveSize;
     }
 
     @Override
@@ -136,13 +130,13 @@ public class TransIndicator extends IBannerIndicator {
         if (positionReal == pointViews.size() - 1 && positionOffset > 0) {
             //最后一个向第一个移动
             if (position >= pointViews.size()) {
-                moveDistance = firstPosition[0] - moveSize + (positionReal * moveSize);
+                moveDistance = firstLeft + (positionReal * moveSize);
             } else {
-                moveDistance = firstPosition[0] - moveSize + (position * moveSize);
+                moveDistance = firstLeft + (position * moveSize);
             }
 
         } else {
-            moveDistance = firstPosition[0] - moveSize + (positionOffset * moveSize + positionReal * moveSize);
+            moveDistance = firstLeft + (positionOffset * moveSize + positionReal * moveSize);
         }
         invalidate();
     }

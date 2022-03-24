@@ -37,14 +37,12 @@
                     android:id="@+id/convenientBanner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="#ffff0000"
-                    app:banner_isAutoTurning="false"
-                    app:banner_isOneDataOffLoopAndTurning="true"
-                    app:banner_turningTime="1000"
-                    app:xvp_radiusLeftBottom="20dp"
-                    app:xvp_radiusRightTop="30dp"
-                    app:xvp_ratio="1" />
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+                    android:padding="5dp"
+                    app:ind_style="ind_trans"
+                    app:xvp_ratio="2"
+                    app:xvp_scrollTime="1000" />
                 <!--<View-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="10000dp"-->
