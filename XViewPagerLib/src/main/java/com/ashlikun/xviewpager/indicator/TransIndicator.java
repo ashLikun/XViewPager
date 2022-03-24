@@ -160,10 +160,12 @@ public class TransIndicator extends IBannerIndicator {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        canvas.save();
-        canvas.translate(moveDistance, 0);
-        selectDraw.draw(canvas);
-        canvas.restore();
+        if (pointViews.size() > 0) {
+            canvas.save();
+            canvas.translate(moveDistance, 0);
+            selectDraw.draw(canvas);
+            canvas.restore();
+        }
     }
 
 

@@ -2,6 +2,7 @@ package com.ashlikun.xviewpager.indicator;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -55,12 +56,13 @@ public abstract class IBannerIndicator extends LinearLayout {
         selectDraw = a.getDrawable(R.styleable.IBannerIndicator_ind_select);
         noSelectDraw = a.getDrawable(R.styleable.IBannerIndicator_ind_no_select);
         if (selectDraw == null) {
-            selectDraw = getResources().getDrawable(R.drawable.banner_circle_select);
+            selectDraw = getResources().getDrawable(R.drawable.banner_circle_select, context.getTheme());
         }
         if (noSelectDraw == null) {
-            noSelectDraw = getResources().getDrawable(R.drawable.banner_circle_default);
+            noSelectDraw = getResources().getDrawable(R.drawable.banner_circle_default, context.getTheme());
         }
         a.recycle();
+        setBackgroundColor(Color.TRANSPARENT);
         initView(context, attrs);
     }
 

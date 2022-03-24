@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
 //        bannerViewPager.setRefreshLayout(findViewById(R.id.swipeRefresh));
         convenientBanner = findViewById(R.id.convenientBanner);
         convenientBanner.setIndicator(new TransIndicator(this));
-        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL4)));
+        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL3)));
 //        convenientBanner.setPages(this, new ArrayList(Arrays.asList(RESURL3)));
         convenientBanner.setOnItemClickListener(new OnItemClickListener() {
             @Override
