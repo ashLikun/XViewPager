@@ -44,7 +44,9 @@ public class ZoomIndicator extends IBannerIndicator {
     public ZoomIndicator(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
+    public ZoomIndicator(Context context, AttributeSet attrs, boolean isSupperAttrs) {
+        super(context, attrs, 0, isSupperAttrs);
+    }
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

@@ -33,6 +33,10 @@ public class DefaultIndicator extends IBannerIndicator {
         super(context, attrs, defStyleAttr);
     }
 
+    public DefaultIndicator(Context context, AttributeSet attrs, boolean isSupperAttrs) {
+        super(context, attrs, 0, isSupperAttrs);
+    }
+
     @Override
     protected void initView(Context context, AttributeSet attrs) {
         setGravity(Gravity.CENTER);

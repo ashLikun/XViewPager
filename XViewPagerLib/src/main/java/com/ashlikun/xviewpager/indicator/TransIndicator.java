@@ -45,7 +45,9 @@ public class TransIndicator extends IBannerIndicator {
     public TransIndicator(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
+    public TransIndicator(Context context, AttributeSet attrs, boolean isSupperAttrs) {
+        super(context, attrs, 0, isSupperAttrs);
+    }
 
     @Override
     protected void initView(Context context, AttributeSet attrs) {
@@ -156,7 +158,7 @@ public class TransIndicator extends IBannerIndicator {
         super.dispatchDraw(canvas);
         if (pointViews.size() > 0) {
             canvas.save();
-            canvas.translate(moveDistance, 0);
+            canvas.translate(moveDistance, ((getHeight() - selectDraw.getIntrinsicHeight()) / 2));
             selectDraw.draw(canvas);
             canvas.restore();
         }

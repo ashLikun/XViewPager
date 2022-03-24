@@ -40,19 +40,6 @@ public class XViewPager extends ViewPager {
     private static final String GAODE_MAP2 = "com.amap.api.maps.TextureMapView";
 
 
-    public XViewPager(Context context) {
-        this(context, null);
-    }
-
-    public XViewPager(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public XViewPager(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs);
-        initView(context, attrs);
-    }
-
     private float startX, startY;
     private ArrayList<Class> classes;
     //ViewPager是否可以滑动
@@ -81,6 +68,18 @@ public class XViewPager extends ViewPager {
     private OnTouchListener dispatchTouchEvent = null;
     private OnTouchListener interceptTouchEvent = null;
     private OnTouchListener touchEvent = null;
+
+    public XViewPager(Context context) {
+        this(context, null);
+    }
+
+    public XViewPager(Context context, AttributeSet attrs) {
+        this(context, attrs, true);
+    }
+    public XViewPager(Context context, AttributeSet attrs, boolean isSupperAttrs) {
+        super(context, isSupperAttrs ? attrs : null);
+        initView(context, attrs);
+    }
 
     protected void initView(Context context, AttributeSet attrs) {
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();

@@ -60,7 +60,11 @@ public class BannerViewPager extends XViewPager {
     }
 
     public BannerViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, true);
+    }
+
+    public BannerViewPager(Context context, AttributeSet attrs, boolean isSupperAttrs) {
+        super(context, attrs, isSupperAttrs);
         init(context, attrs);
     }
 

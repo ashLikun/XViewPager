@@ -58,15 +58,15 @@ public class ConvenientBanner extends FrameLayout {
 
     @SuppressLint("ResourceType")
     private void init(Context context, AttributeSet attrs) {
-        viewPager = new BannerViewPager(context, attrs);
+        viewPager = new BannerViewPager(context, attrs, false);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ConvenientBanner);
         int style = a.getInt(R.styleable.ConvenientBanner_ind_style, 1);
         if (style == 1) {
-            indicator = new DefaultIndicator(context, attrs);
+            indicator = new DefaultIndicator(context, attrs, false);
         } else if (style == 2) {
-            indicator = new ZoomIndicator(context, attrs);
+            indicator = new ZoomIndicator(context, attrs, false);
         } else if (style == 3) {
-            indicator = new TransIndicator(context, attrs);
+            indicator = new TransIndicator(context, attrs, false);
         }
         a.recycle();
         viewPager.setId(VIEWPAGER_ID);

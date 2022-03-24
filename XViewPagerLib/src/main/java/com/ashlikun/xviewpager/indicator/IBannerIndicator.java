@@ -50,8 +50,12 @@ public abstract class IBannerIndicator extends LinearLayout {
         this(context, attrs, 0);
     }
 
-    public IBannerIndicator(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public IBannerIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
+        this(context, attrs, defStyleAttr, true);
+    }
+
+    public IBannerIndicator(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, boolean isSupperAttrs) {
+        super(context, isSupperAttrs ? attrs : null, defStyleAttr);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IBannerIndicator);
         space = (int) a.getDimension(R.styleable.IBannerIndicator_ind_space, ViewPagerUtils.dip2px(context, space));
         selectDraw = a.getDrawable(R.styleable.IBannerIndicator_ind_select);
