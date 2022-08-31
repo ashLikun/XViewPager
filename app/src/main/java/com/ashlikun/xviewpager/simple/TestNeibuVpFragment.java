@@ -13,10 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.ashlikun.xviewpager.FragmentUtils;
-import com.ashlikun.xviewpager.fragment.FragmentPagerAdapter;
 import com.ashlikun.xviewpager.fragment.FragmentPagerItem;
-import com.ashlikun.xviewpager.view.XViewPager;
 
 /**
  * 作者　　: 李坤
@@ -25,12 +22,10 @@ import com.ashlikun.xviewpager.view.XViewPager;
  * <p>
  * 功能介绍：
  */
-@Route(path = "/Fragment/test")
-public class TestFragment extends Fragment {
+@Route(path = "/Fragment/test/neibu")
+public class TestNeibuVpFragment extends Fragment {
     String id;
     View view;
-    XViewPager viewPager;
-    FragmentPagerAdapter adapter;
     boolean isCache = false;
 
     @Override
@@ -49,7 +44,7 @@ public class TestFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_test1, null);
+        View view = inflater.inflate(R.layout.fragment_test_neibu, null);
         Log.e("onCreateView", "id == " + id + "    isCache = " + isCache);
         isCache = true;
         return view;
@@ -61,44 +56,31 @@ public class TestFragment extends Fragment {
         super.onViewCreated(rootView, savedInstanceState);
         Log.e("onViewCreated", "id == " + id);
         view = rootView.findViewById(R.id.view);
-        FragmentUtils.removeAll(getChildFragmentManager());
-        viewPager = rootView.findViewById(R.id.viewPager);
-        adapter = FragmentPagerAdapter.Builder.create(getChildFragmentManager())
-                .addItem("/Fragment/test/neibu").setId("1").ok()
-                .addItem("/Fragment/test/neibu").setId("2").ok()
-                .addItem("/Fragment/test/neibu").setId("3").ok()
-                .addItem("/Fragment/test/neibu").setId("4").ok()
-                .addItem("/Fragment/test/neibu").setId("5").ok()
-                .addItem("/Fragment/test/neibu").setId("6").ok()
-                .addItem("/Fragment/test/neibu").setId("7").ok()
-                .setCache(true)
-                .build();
         TextView textView = rootView.findViewById(R.id.textView);
-        textView.setText("我是第" + id + "个");
+        textView.setText("我是内部第" + id + "个");
         switch (id) {
             case "1":
-                view.setBackgroundColor(0xffff0000);
+                view.setBackgroundColor(0xffffffff);
                 break;
             case "2":
-                view.setBackgroundColor(0xff00ff00);
+                view.setBackgroundColor(0xffffffff);
                 break;
             case "3":
-                view.setBackgroundColor(0xff0000ff);
+                view.setBackgroundColor(0xffffffff);
                 break;
             case "4":
-                view.setBackgroundColor(0xffff0fff);
+                view.setBackgroundColor(0xffffffff);
                 break;
             case "5":
-                view.setBackgroundColor(0xff665588);
+                view.setBackgroundColor(0xffffffff);
                 break;
             case "6":
-                view.setBackgroundColor(0xff778822);
+                view.setBackgroundColor(0xffffffff);
                 break;
             case "7":
-                view.setBackgroundColor(0xff334499);
+                view.setBackgroundColor(0xffffffff);
                 break;
         }
-        viewPager.setAdapter(adapter);
     }
 
     @Override

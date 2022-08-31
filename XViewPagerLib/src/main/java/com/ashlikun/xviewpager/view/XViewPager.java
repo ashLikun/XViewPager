@@ -45,6 +45,7 @@ public class XViewPager extends ViewPager {
     //ViewPager是否可以滑动
     private boolean isCanSlide = true;
     private View refreshLayout;
+    private Boolean refreshLayoutEnable = null;
     private int touchSlop;
     //滑动模式
     private ScrollMode scrollMode = ScrollMode.HORIZONTAL;
@@ -76,6 +77,7 @@ public class XViewPager extends ViewPager {
     public XViewPager(Context context, AttributeSet attrs) {
         this(context, attrs, true);
     }
+
     public XViewPager(Context context, AttributeSet attrs, boolean isSupperAttrs) {
         super(context, isSupperAttrs ? attrs : null);
         initView(context, attrs);
@@ -157,9 +159,13 @@ public class XViewPager extends ViewPager {
     public boolean onTouchEvent(MotionEvent ev) {
         if (isCanSlide) {
             if (refreshLayout != null) {
+                if (refreshLayoutEnable == null)
+                    refreshLayoutEnable = refreshLayout.isEnabled();
                 int action = ev.getAction();
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
+                        if (refreshLayoutEnable == null)
+                            refreshLayoutEnable = refreshLayout.isEnabled();
                         // 记录手指按下的位置
                         startY = ev.getY();
                         startX = ev.getX();
@@ -171,12 +177,18 @@ public class XViewPager extends ViewPager {
                         float distanceX = Math.abs(endX - startX);
                         float distanceY = Math.abs(endY - startY);
                         if (distanceX > touchSlop && distanceX > distanceY) {
-                            refreshLayout.setEnabled(false);
+                            if (refreshLayoutEnable != null && refreshLayoutEnable) {
+                                refreshLayout.setEnabled(false);
+                            }
+
                         }
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        refreshLayout.setEnabled(true);
+                        if (refreshLayoutEnable != null) {
+                            refreshLayout.setEnabled(refreshLayoutEnable);
+                            refreshLayoutEnable = null;
+                        }
                         break;
                     default:
                         break;

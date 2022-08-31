@@ -1,6 +1,7 @@
 package com.ashlikun.xviewpager.simple;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import com.ashlikun.xviewpager.view.BannerViewPager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements ViewPageHelperListener<String> {
     BannerViewPager bannerViewPager;
@@ -59,11 +59,11 @@ public class MainActivity extends AppCompatActivity implements ViewPageHelperLis
     }
 
     public void onClick(View view) {
-//        Intent intent = new Intent(this, Main2Activity.class);
-//        startActivity(intent);
-        ArrayList aa = new ArrayList(Arrays.asList(RESURL3));
-        Collections.reverse(aa);
-        convenientBanner.setPages(aa);
+        Intent intent = new Intent(this, Main2Activity.class);
+        startActivity(intent);
+//        ArrayList aa = new ArrayList(Arrays.asList(RESURL3));
+//        Collections.reverse(aa);
+//        convenientBanner.setPages(aa);
 //        if (bannerViewPager.getRealItemCount() == RESURL.length) {
 //            bannerViewPager.setPages(new ArrayList(Arrays.asList(RESURL2)));
 //            convenientBanner.setPages(new ArrayList(Arrays.asList(RESURL2)));
