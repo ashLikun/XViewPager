@@ -134,9 +134,12 @@ public class XViewPager extends ViewPager {
 
     @Override
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+        //优先使用外部判断
+        if(onCanScroll != null){
+            return onCanScroll.canScroll(v, checkV, dx, x, y);
+        }
         String className = v.getClass().getName();
         return super.canScroll(v, checkV, dx, x, y)
-                || (onCanScroll != null && onCanScroll.canScroll(v, checkV, dx, x, y))
                 || BAIDU_MAP1.equals(className)
                 || BAIDU_MAP2.equals(className)
                 || GAODE_MAP1.equals(className)
