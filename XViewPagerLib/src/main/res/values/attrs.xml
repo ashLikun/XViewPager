@@ -118,6 +118,7 @@
         <attr name="xvp_radiusLeftBottom"></attr>
         <!--滚动速度-->
         <attr name="xvp_scrollTime"></attr>
+        <attr name="xvp_isNeedWindowInsetsBug"></attr>
     </declare-styleable>
     <declare-styleable name="FragmentLayout">
         <attr name="fl_maxCache" format="integer"></attr>

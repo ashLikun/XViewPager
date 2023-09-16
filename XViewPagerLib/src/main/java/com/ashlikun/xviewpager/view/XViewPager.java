@@ -5,11 +5,14 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.WindowInsets;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -70,6 +73,9 @@ public class XViewPager extends ViewPager {
     private OnTouchListener interceptTouchEvent = null;
     private OnTouchListener touchEvent = null;
 
+    public boolean isNeedWindowInsetsBug = true;
+
+
     public XViewPager(Context context) {
         this(context, null);
     }
@@ -84,6 +90,7 @@ public class XViewPager extends ViewPager {
     }
 
     protected void initView(Context context, AttributeSet attrs) {
+
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.XViewPager);
         ratio = a.getFloat(R.styleable.XViewPager_xvp_ratio, 0);
@@ -106,10 +113,60 @@ public class XViewPager extends ViewPager {
         if (a.hasValue(R.styleable.XViewPager_xvp_radiusLeftBottom)) {
             radiusLeftBottom = a.getDimension(R.styleable.XViewPager_xvp_radiusLeftBottom, radiusLeftBottom);
         }
+        if (a.hasValue(R.styleable.XViewPager_xvp_isNeedWindowInsetsBug)) {
+            isNeedWindowInsetsBug = a.getBoolean(R.styleable.XViewPager_xvp_isNeedWindowInsetsBug, isNeedWindowInsetsBug);
+        }
         //滚动速度
         setScrollTime(a.getInteger(R.styleable.XViewPager_xvp_scrollTime, scrollTime));
         a.recycle();
+        windowInsetsBug();
     }
+
+    /**
+     * 解决在低于30 的手机上 导致主线程一直重绘问题,从而导致onStop onDestroy 回调延迟
+     * https://www.jianshu.com/p/25c139e9666a
+     */
+    public void windowInsetsBug() {
+        if (!isNeedWindowInsetsBug) return;
+        if (Build.VERSION.SDK_INT < 30) {
+            setOnApplyWindowInsetsListener(new OnApplyWindowInsetsListener() {
+                private Rect mTempRect = new Rect();
+
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                    //消费事件
+                    final WindowInsets applied = insets;
+                    if (applied.isConsumed()) {
+                        return applied;
+                    }
+                    final Rect res = mTempRect;
+                    res.left = applied.getSystemWindowInsetLeft();
+                    res.top = applied.getSystemWindowInsetTop();
+                    res.right = applied.getSystemWindowInsetRight();
+                    res.bottom = applied.getSystemWindowInsetBottom();
+
+                    for (int i = 0, count = getChildCount(); i < count; i++) {
+
+                        final WindowInsets childInsets = getChildAt(i).dispatchApplyWindowInsets(applied);
+                        // Now keep track of any consumed by tracking each dimension's min
+                        // value
+                        res.left = Math.min(childInsets.getSystemWindowInsetLeft(),
+                                res.left);
+                        res.top = Math.min(childInsets.getSystemWindowInsetTop(),
+                                res.top);
+                        res.right = Math.min(childInsets.getSystemWindowInsetRight(),
+                                res.right);
+                        res.bottom = Math.min(childInsets.getSystemWindowInsetBottom(),
+                                res.bottom);
+                    }
+                    // 这里必须消费
+                    return applied.replaceSystemWindowInsets(res.left, res.top, res.right, res.bottom)
+                            .consumeSystemWindowInsets();
+                }
+            });
+        }
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -135,7 +192,7 @@ public class XViewPager extends ViewPager {
     @Override
     protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
         //优先使用外部判断
-        if(onCanScroll != null){
+        if (onCanScroll != null) {
             return onCanScroll.canScroll(v, checkV, dx, x, y);
         }
         String className = v.getClass().getName();
