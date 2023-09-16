@@ -40,6 +40,7 @@
     <attr name="xvp_radiusRightTop" format="reference|dimension"></attr>
     <attr name="xvp_radiusRightBottom" format="reference|dimension"></attr>
     <attr name="xvp_radiusLeftBottom" format="reference|dimension"></attr>
+    <attr name="xvp_isNeedWindowInsetsBug" format="boolean"></attr>
     <!--滚动速度-->
     <attr name="xvp_scrollTime" format="integer"></attr>
     <!--参考方向-->
